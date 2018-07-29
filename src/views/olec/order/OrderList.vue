@@ -19,6 +19,8 @@ Description
                 </el-table-column>
                 <el-table-column prop="shopName" label="店铺" width="180">
                 </el-table-column>
+                <el-table-column prop="user" label="用户">
+                </el-table-column>
                 <el-table-column prop="status" label="支付状态">
                 </el-table-column>
                 <el-table-column prop="total" label="总价">
@@ -27,7 +29,7 @@ Description
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <span class="single-btn" @click="handleEdit(scope.$index, scope.row)">查看</span>
+                        <span class="single-btn" @click="handleDetail(scope.$index, scope.row)">查看</span>
                         <el-dropdown>
                             <span class="el-dropdown-link more-btn">
                                 更多

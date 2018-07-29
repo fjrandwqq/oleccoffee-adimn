@@ -1,14 +1,13 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
 // in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
 // detail: https://panjiachen.github.io/vue-element-admin-site/#/lazy-loading
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
-import Home from '../views/Home'
-
+import Home from '../views/Home';
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
 * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
@@ -30,55 +29,103 @@ export const constantRouterMap = [
     component: Home,
     redirect: '/dashboard',
     name: 'Dashboard',
+    // redirect: '/table',
     hidden: true,
-    children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
-    }]
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index')
+      }
+    ]
   }
-]
+];
 
 export default new Router({
   // mode: 'history', //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
-})
+});
+
+// export const asyncRouterMap = [
+//   {
+//     path: '/example',
+//     component: Home,
+//     redirect: '/example/table',
+//     name: 'Example',
+//     meta: { title: '例子', icon: 'example' },
+//     children: [
+//       {
+//         path: 'table',
+//         name: 'table',
+//         component: () => import('@/views/table/index'),
+//         meta: { title: '表格', icon: 'table' }
+//       },
+//       {
+//         path: 'tree',
+//         name: 'tree',
+//         component: () => import('@/views/tree/index'),
+//         meta: { title: '树', icon: 'tree', roles: ['admin'] }
+//       }
+//     ]
+//   },
+
+//   {
+//     path: '/form',
+//     component: Home,
+//     children: [
+//       {
+//         path: 'index',
+//         name: 'Form',
+//         component: resolve => require(['@/views/form/index'], resolve),
+//         meta: { title: '表单', icon: 'form' }
+//       }
+//     ]
+//   },
+//   { path: '*', redirect: '/404', hidden: true }
+// ];
 
 export const asyncRouterMap = [
   {
-    path: '/example',
+    path: '/shops',
     component: Home,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: '例子', icon: 'example' },
+    alwaysShow: true,
+    meta: { title: '店铺管理', icon: 'example' },
     children: [
       {
         path: 'table',
-        name: 'table',
+        name: 'shopsManage',
         component: () => import('@/views/table/index'),
-        meta: { title: '表格', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '树', icon: 'tree', roles: ['admin'] }
+        meta: { title: '店铺列表', icon: 'table' }
       }
     ]
   },
-
   {
-    path: '/form',
+    path: '/goods',
     component: Home,
+    alwaysShow: true,
+    meta: { title: '商品管理', icon: 'tree', roles: ['admin'] },
     children: [
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: '表单', icon: 'form' }
+        path: 'tree',
+        name: 'goodsManage',
+        component: () => import('@/views/tree/index'),
+        meta: { title: '商品列表', icon: 'table' }
+      }
+    ]
+  }, {
+    path: '/order',
+    name: 'order',
+    component: Home,
+    alwaysShow: true,
+    meta: { title: '订单管理', icon: 'order', roles: ['admin'] },
+    children: [
+      {
+        path: 'orderList',
+        name: 'orderMange',
+        component: () => import('@/views/olec/order/OrderList'),
+        meta: { title: '订单列表', icon: 'order' }
       }
     ]
   },
-
   { path: '*', redirect: '/404', hidden: true }
-]
+];

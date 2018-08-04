@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, removeToken } from '@/utils/auth'
 
 const user = {
   state: {
@@ -10,9 +10,6 @@ const user = {
   },
 
   mutations: {
-    SET_TOKEN: (state, token) => {
-      state.token = token
-    },
     SET_NAME: (state, name) => {
       state.name = name
     },
@@ -29,10 +26,14 @@ const user = {
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
-          const data = response.data
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
+        login(username, userInfo.password).then(res => {
+          if (res.data.status === 'fail') {
+            // reject()
+          } else {
+            commit('SET_NAME', res.username)
+            commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80')
+            resolve()
+          }
           resolve()
         }).catch(error => {
           reject(error)

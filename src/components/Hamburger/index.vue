@@ -21,12 +21,12 @@ export default {
       default: null
     }
   }
-};
+}
 </script>
 
 <style scoped>
 .hamburger {
-  display: inline-block;
+ display: inline-block;
   cursor: pointer;
   width: 20px;
   height: 20px;

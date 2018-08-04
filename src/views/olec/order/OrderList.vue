@@ -62,9 +62,9 @@ export default {
           payForm: '微信'
         }
       ]
-    };
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped src="./OrderList.scss"></style>

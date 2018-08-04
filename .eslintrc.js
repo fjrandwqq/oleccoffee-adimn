@@ -166,8 +166,8 @@ module.exports = {
       'avoidEscape': true,
       'allowTemplateLiterals': true
     }],
-    // 'semi': [2, 'always'], 对分号太严格
-     'semi':0,
+    'semi': [2, 'never'],  //对分号太严格
+    //  'semi':0,
     'semi-spacing': [2, {
       'before': false,
       'after': true

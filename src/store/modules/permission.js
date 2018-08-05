@@ -31,7 +31,7 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
 //   return accessedRouters
 // }
 // function filterAsyncRouter(asyncRouterMap, menus) {
-
+//   const menu
 // }
 
 const permission = {
@@ -48,10 +48,12 @@ const permission = {
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
-        // const { menus } = data
+        const { menus } = data
+        commit('SET_MENUS', menus)
         // const accessedRouters = filterAsyncRouter(menus)
+        // console.log(filterAsyncRouter(menus));
         const accessedRouters = asyncRouterMap
-        console.log(accessedRouters)
+        // console.log(accessedRouters)
         commit('SET_ROUTERS', accessedRouters)
         resolve()
       })

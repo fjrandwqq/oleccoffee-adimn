@@ -10,8 +10,8 @@ const user = {
   },
 
   mutations: {
-    SET_LOGINFlag: (state, flag) => {
-      state.flag = true
+    SET_LOGINFlag: (state, loginFlag) => {
+      state.loginFlag = loginFlag
     },
     SET_NAME: (state, name) => {
       state.name = name
@@ -36,7 +36,7 @@ const user = {
             setLoginFlag(true)
             commit('SET_LOGINFlag', true)
             commit('SET_NAME', res.username)
-            commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80')
+            commit('SET_AVATAR', 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533460636268&di=7ab5a5d530f3fb6d2c505415222fe58b&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd52a2834349b033bda94010519ce36d3d439bdd5.jpg')
             resolve()
           }
         }).catch(error => {

@@ -37,7 +37,8 @@ export const constantRouterMap = [
         component: () => import('@/views/dashboard/index')
       }
     ]
-  }
+  },
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
@@ -89,13 +90,13 @@ export const asyncRouterMap = [
     path: '/shops',
     component: Home,
     alwaysShow: true,
-    meta: { title: '店铺管理', icon: 'example' },
+    meta: { title: '店铺管理', icon: 'example', code: 'shopManage' },
     children: [
       {
         path: 'table',
         name: 'shopsManage',
         component: () => import('@/views/table/index'),
-        meta: { title: '店铺列表', icon: 'table' }
+        meta: { title: '店铺列表', icon: 'table', code: 'shopList' }
       }
     ]
   },
@@ -103,13 +104,13 @@ export const asyncRouterMap = [
     path: '/goods',
     component: Home,
     alwaysShow: true,
-    meta: { title: '商品管理', icon: 'tree', roles: ['admin'] },
+    meta: { title: '商品管理', icon: 'tree', code: 'goodsManage' },
     children: [
       {
         path: 'tree',
         name: 'goodsManage',
         component: () => import('@/views/tree/index'),
-        meta: { title: '商品列表', icon: 'table' }
+        meta: { title: '商品列表', icon: 'table', code: 'goodsList' }
       }
     ]
   }, {
@@ -117,15 +118,14 @@ export const asyncRouterMap = [
     name: 'order',
     component: Home,
     alwaysShow: true,
-    meta: { title: '订单管理', icon: 'order', roles: ['admin'] },
+    meta: { title: '订单管理', icon: 'order', code: 'orderManage' },
     children: [
       {
         path: 'orderList',
         name: 'orderMange',
         component: () => import('@/views/olec/order/OrderList'),
-        meta: { title: '订单列表', icon: 'order' }
+        meta: { title: '订单列表', icon: 'order', code: 'orderList' }
       }
     ]
-  },
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]

@@ -30,9 +30,30 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
 //   })
 //   return accessedRouters
 // }
-// function filterAsyncRouter(asyncRouterMap, menus) {
-//   const menu
-// }
+
+function filterAsyncRouter(asyncRouterMap, menus) {
+  const accessedRouters = asyncRouterMap.filter(route => {
+    const index = findIndex(route, menus)
+    debugger
+    if (index !== -1) {
+      if (route.children && route.children.length && menus.children && menus.children.length > 0) {
+        route.children = filterAsyncRouter(route.children, menus[index].children)
+      }
+      return true
+    }
+    return false
+  })
+  return accessedRouters
+}
+
+function findIndex(route, menus) {
+  for (const i in menus) {
+    if (menus[i].code && menus[i].code === route.meta.code) {
+      return i
+    }
+  }
+  return -1
+}
 
 const permission = {
   state: {
@@ -50,9 +71,10 @@ const permission = {
       return new Promise(resolve => {
         const { menus } = data
         commit('SET_MENUS', menus)
-        // const accessedRouters = filterAsyncRouter(menus)
+        const accessedRouters = filterAsyncRouter(asyncRouterMap, menus)
+        console.log(accessedRouters)
         // console.log(filterAsyncRouter(menus));
-        const accessedRouters = asyncRouterMap
+        // const accessedRouters = asyncRouterMap
         // console.log(accessedRouters)
         commit('SET_ROUTERS', accessedRouters)
         resolve()

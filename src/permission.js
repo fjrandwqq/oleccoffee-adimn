@@ -10,7 +10,6 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
-  debugger
   NProgress.start() // start progress bar
   if (getLoginFlag()) {
     // determine if there has token
@@ -35,9 +34,59 @@ router.beforeEach((to, from, next) => {
         //     next({ path: '/' })
         //   })
         // })
-        const a = ['11']
-        store.dispatch('GenerateRoutes', { a }).then(() => {
-          debugger
+        const menus = [
+          {
+            code: 'shopManage',
+            name: '店铺管理',
+            children: [
+              {
+                code: 'indexSetting',
+                name: '首页配置'
+              },
+              {
+                code: 'shopList',
+                name: '店铺列表'
+              }
+            ]
+          },
+          {
+            code: 'goodsManage',
+            name: '商品管理',
+            children: [{
+              code: 'goodsList',
+              name: '商品列表'
+            }]
+          },
+          {
+            code: 'orderManage',
+            name: '订单管理',
+            children: [{
+              code: 'orderList',
+              name: '订单列表'
+            }]
+          },
+          {
+            code: 'userManage',
+            name: '用户管理',
+            children: [{
+              code: 'userList',
+              name: '用户列表'
+            }]
+          },
+          {
+            code: 'weChatManage',
+            name: '微信管理',
+            children: [
+            ]
+          },
+          {
+            code: 'systemManage',
+            name: '系统管理',
+            children: [
+            ]
+          }
+        ]
+        store.dispatch('GenerateRoutes', { menus }).then(() => {
           router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
           next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
         })

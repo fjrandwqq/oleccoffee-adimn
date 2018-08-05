@@ -11,12 +11,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      "/api": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+      "/frontApi": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
         target:'http://www.backom.cn/manage',
         // target:'http://193.112.224.86:8190/manage',
         // target:'http://193.112.224.86',
         pathRewrite: {
-          "^/api": ""
+          "^/frontApi": ""
         },
         changeOrigin: true
       }

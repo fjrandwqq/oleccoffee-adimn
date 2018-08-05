@@ -1,31 +1,21 @@
 import request from '@/utils/request'
+import qs from 'qs'
 
-// export function login(username, password) {
-//   return request({
-//     url: '/user/login',
-//     method: 'post',
-//     data: {
-//       username,
-//       password
-//     }
-//   })
-// }
 export function login(username, password) {
   return request({
     url: '/login',
     method: 'post',
-    data: {
-      username,
-      password
+    data: qs.stringify({ username, password }),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
   })
 }
 
-export function getInfo(token) {
+export function getMenus() {
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+    url: '/api/desktop/menus',
+    method: 'get'
   })
 }
 

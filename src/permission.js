@@ -1,9 +1,9 @@
 import router from './router'
 import store from './store'
-// import { Message } from 'element-ui'
+import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getLoginFlag } from '@/utils/auth' // getToken from cookie
+import { getToken } from '@/utils/auth' // getToken from cookie
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -11,7 +11,7 @@ const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
-  if (getLoginFlag()) {
+  if (getToken()) {
     // determine if there has token
     /* has token*/
     if (to.path === '/login') {
@@ -21,74 +21,18 @@ router.beforeEach((to, from, next) => {
       console.log(store.getters)
       if (store.getters.menus && store.getters.menus.length === 0) {
         // 判断菜单是否拉取
-        // store.dispatch('GetMenus').then(res => { // 拉取user_info
-        //   console.log(res.data)
-        //   const menus = res.data
-        //   store.dispatch('GenerateRoutes', { menus }).then(() => {
-        //     router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-        //     next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-        //   })
-        // }).catch((err) => {
-        //   store.dispatch('FedLogOut').then(() => {
-        //     Message.error(err || '认证失败，请重新登录')
-        //     next({ path: '/' })
-        //   })
-        // })
-        const menus = [
-          {
-            code: 'shopManage',
-            name: '店铺管理',
-            children: [
-              {
-                code: 'indexSetting',
-                name: '首页配置'
-              },
-              {
-                code: 'shopList',
-                name: '店铺列表'
-              }
-            ]
-          },
-          {
-            code: 'goodsManage',
-            name: '商品管理',
-            children: [{
-              code: 'goodsList',
-              name: '商品列表'
-            }]
-          },
-          {
-            code: 'orderManage',
-            name: '订单管理',
-            children: [{
-              code: 'orderList',
-              name: '订单列表'
-            }]
-          },
-          {
-            code: 'userManage',
-            name: '用户管理',
-            children: [{
-              code: 'userList',
-              name: '用户列表'
-            }]
-          },
-          {
-            code: 'weChatManage',
-            name: '微信管理',
-            children: [
-            ]
-          },
-          {
-            code: 'systemManage',
-            name: '系统管理',
-            children: [
-            ]
-          }
-        ]
-        store.dispatch('GenerateRoutes', { menus }).then(() => {
-          router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-          next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+        store.dispatch('GetMenus').then(res => { // 拉取user_info
+          console.log(res.data)
+          const menus = res.data
+          store.dispatch('GenerateRoutes', { menus }).then(() => {
+            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+          })
+        }).catch((err) => {
+          store.dispatch('FedLogOut').then(() => {
+            Message.error(err || '认证失败，请重新登录')
+            next({ path: '/' })
+          })
         })
       } else {
         next()

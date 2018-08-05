@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
+    <el-form class="login-form" autoComplete="on" :model="loginForm" ref="loginForm" label-position="left">
       <h3 class="title">欧蕾克咖啡后台管理系统</h3>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
@@ -35,20 +35,10 @@ import { Message } from 'element-ui'
 export default {
   name: 'login',
   data() {
-    const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error('密码不能小于5位'))
-      } else {
-        callback()
-      }
-    }
     return {
       loginForm: {
         username: 'fjrfjr',
         password: '123456'
-      },
-      loginRules: {
-        password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
       pwdType: 'password'

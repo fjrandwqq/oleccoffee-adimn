@@ -34,7 +34,6 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
 function filterAsyncRouter(asyncRouterMap, menus) {
   const accessedRouters = asyncRouterMap.filter(route => {
     const index = findIndex(route, menus)
-    debugger
     if (index !== -1) {
       if (route.children && route.children.length && menus.children && menus.children.length > 0) {
         route.children = filterAsyncRouter(route.children, menus[index].children)

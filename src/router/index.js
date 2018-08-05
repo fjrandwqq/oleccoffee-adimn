@@ -118,13 +118,13 @@ export const asyncRouterMap = [
     name: 'order',
     component: Home,
     alwaysShow: true,
-    meta: { title: '订单管理', icon: 'order', code: 'orderManage' },
+    meta: { title: '订单管理', icon: 'order', code: 'ordersManage' },
     children: [
       {
         path: 'orderList',
         name: 'orderMange',
         component: () => import('@/views/olec/order/OrderList'),
-        meta: { title: '订单列表', icon: 'order', code: 'orderList' }
+        meta: { title: '订单列表', icon: 'order', code: 'ordersList' }
       }
     ]
   }

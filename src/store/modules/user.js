@@ -1,17 +1,17 @@
 import { login, getMenus, logout } from '@/api/login'
-import { getLoginFlag, setLoginFlag, removeLoginFlag } from '@/utils/auth'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
   state: {
-    loginInfo: getLoginFlag(),
+    token: getToken(),
     name: '',
     avatar: '',
     menus: []
   },
 
   mutations: {
-    SET_LOGINFlag: (state, loginFlag) => {
-      state.loginFlag = loginFlag
+    SET_TOKEN: (state, token) => {
+      state.token = token
     },
     SET_NAME: (state, name) => {
       state.name = name
@@ -30,14 +30,14 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(res => {
-          if (res.data.status === 'fail') {
-            reject()
-          } else {
-            setLoginFlag(true)
-            commit('SET_LOGINFlag', true)
+          if (res.data.status === 'success') {
+            setToken(res.data.token)
+            commit('SET_TOKEN', res.data.token)
             commit('SET_NAME', res.username)
             commit('SET_AVATAR', 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533460636268&di=7ab5a5d530f3fb6d2c505415222fe58b&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd52a2834349b033bda94010519ce36d3d439bdd5.jpg')
             resolve()
+          } else {
+            reject()
           }
         }).catch(error => {
           reject(error)
@@ -84,8 +84,8 @@ const user = {
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
-          commit('SET_LOGINFlag', false)
-          removeLoginFlag()
+          commit('SET_TOKEN', '')
+          removeToken()
           resolve()
         }).catch(error => {
           reject(error)
@@ -96,9 +96,9 @@ const user = {
     // 前端 登出
     FedLogOut({ commit }) {
       return new Promise(resolve => {
-        commit('SET_LOGINFlag', false)
+        commit('SET_TOKEN', '')
         commit('SET_MENUS', [])
-        removeLoginFlag()
+        removeToken()
         resolve()
       })
     }

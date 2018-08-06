@@ -88,6 +88,7 @@ export default new Router({
 export const asyncRouterMap = [
   {
     path: '/shops',
+    name: 'shops',
     component: Home,
     alwaysShow: true,
     meta: { title: '店铺管理', icon: 'example', code: 'shopManage' },
@@ -102,6 +103,7 @@ export const asyncRouterMap = [
   },
   {
     path: '/goods',
+    name: 'goods',
     component: Home,
     alwaysShow: true,
     meta: { title: '商品管理', icon: 'tree', code: 'goodsManage' },

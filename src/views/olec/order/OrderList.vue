@@ -79,75 +79,75 @@ Description
 </template>
 
 <script>
-import { getOrder } from "@/api/order"
+import { getOrder } from '@/api/order'
 export default {
-    data() {
-        return {
-            receiveTypeList: ['全部', '送货上门', '自提'],
-            statusList: ['全部', '确认收货', '待发货', '配送中', '未付款', '用户取消', '用户拒收'],
-            currentPage: 1,
-            pageSize: 10,
-            total: 0,
-            orderList: [],
-            dateRange: [],
-            form: {
-                shopCode: '',
-                receiveType: '',
-                orderCode: '',
-                userMobile: '',
-                userAddress: '',
-                orderStartDateTime: '',
-                orderEndDateTime: '',
-                status: '',
-                start: 1,
-                length: 10,
-            },
-        }
-    },
-    mounted() {
-        this.search()
-    },
-    methods: {
-        search() {
-            this.$refs.tableWrapper.scrollTop = 0;
-            if (this.form.status == '全部') {
-                this.form.status = ''
-            }
-            if (this.form.receiveType == '全部') {
-                this.form.receiveType = ''
-            }
-            this.form.orderStartDateTime = this.dateRange && this.dateRange[0] || ''
-            this.form.orderEndDateTime = this.dateRange && this.dateRange[1] || ''
-            this.form.start = (this.currentPage - 1) * this.pageSize + 1
-            this.form.length = this.pageSize
-            this.getOrderList()
-        },
-        getOrderList() {
-            getOrder(this.form).then(({ data }) => {
-                const { datas = [], count = 0 } = data || {}
-                this.orderList = datas
-                this.total = count
-            })
-        },
-        handleSizeChange(pageSize) {
-            this.pageSize = pageSize
-            this.currentPage = 1
-            this.search()
-        },
-        handleCurrentChange(page) {
-            this.currentPage = page
-            this.search()
-        },
-        showDetail(data) {
-
-        },
-        editOrder() {
-
-        },
-        deleteOrder() {
-
-        }
+  data() {
+    return {
+      receiveTypeList: ['全部', '送货上门', '自提'],
+      statusList: ['全部', '确认收货', '待发货', '配送中', '未付款', '用户取消', '用户拒收'],
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
+      orderList: [],
+      dateRange: [],
+      form: {
+        shopCode: '',
+        receiveType: '',
+        orderCode: '',
+        userMobile: '',
+        userAddress: '',
+        orderStartDateTime: '',
+        orderEndDateTime: '',
+        status: '',
+        start: 1,
+        length: 10
+      }
     }
+  },
+  mounted() {
+    this.search()
+  },
+  methods: {
+    search() {
+      this.$refs.tableWrapper.scrollTop = 0
+      if (this.form.status === '全部') {
+        this.form.status = ''
+      }
+      if (this.form.receiveType === '全部') {
+        this.form.receiveType = ''
+      }
+      this.form.orderStartDateTime = this.dateRange && this.dateRange[0] || ''
+      this.form.orderEndDateTime = this.dateRange && this.dateRange[1] || ''
+      this.form.start = (this.currentPage - 1) * this.pageSize + 1
+      this.form.length = this.pageSize
+      this.getOrderList()
+    },
+    getOrderList() {
+      getOrder(this.form).then(({ data }) => {
+        const { datas = [], count = 0 } = data || {}
+        this.orderList = datas
+        this.total = count
+      })
+    },
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize
+      this.currentPage = 1
+      this.search()
+    },
+    handleCurrentChange(page) {
+      this.currentPage = page
+      this.search()
+    },
+    showDetail(data) {
+
+    },
+    editOrder() {
+
+    },
+    deleteOrder() {
+
+    }
+  }
 
 }
 </script>

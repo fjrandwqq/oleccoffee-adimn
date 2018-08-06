@@ -1,9 +1,28 @@
 #order-list{
-    padding:10px;
-    .search-panel{
+    height: 100%;
+    padding:144px 10px 104px;
+    position: relative;
+    .search-form {
         padding:10px;
-        .search-input{
-            max-width:400px;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 9;
+        .el-input {
+            width:300px;
         }
+    }
+    .ol-table{
+        height: 100%;
+        overflow: auto;
+    }
+    .el-pagination{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 9;
+        width: 100%;
+        padding: 20px;
     }
 }

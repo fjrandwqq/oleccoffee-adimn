@@ -99,7 +99,7 @@ export default {
         orderStartDateTime: '',
         orderEndDateTime: '',
         status: '',
-        start: 1,
+        start: 0,
         length: 10
       }
     }
@@ -118,7 +118,7 @@ export default {
       }
       this.form.orderStartDateTime = this.dateRange && this.dateRange[0] || ''
       this.form.orderEndDateTime = this.dateRange && this.dateRange[1] || ''
-      this.form.start = (this.currentPage - 1) * this.pageSize + 1
+      this.form.start = (this.currentPage - 1) * this.pageSize
       this.form.length = this.pageSize
       this.getOrderList()
     },

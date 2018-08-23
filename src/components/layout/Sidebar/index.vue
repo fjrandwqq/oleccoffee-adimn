@@ -4,10 +4,10 @@
       <a>
         <template v-if="!isCollapse">
           <img class="logo" :title="title" :src="logo" />
-          <span class="title">{{title}}</span>
+          <!-- <span class="title">{{title}}</span> -->
         </template>
         <template v-else>
-          <img class="logo" :title="title" :src="logo" />
+          <img class="logo" :title="title" :src="logoFold" />
         </template>
       </a>
     </div>
@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       logo: sysInfo.logo,
+      logoFold: sysInfo.logoFold,
       title: sysInfo.title
     }
   }

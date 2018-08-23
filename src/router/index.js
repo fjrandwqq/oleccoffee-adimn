@@ -23,13 +23,13 @@ import Home from '../views/Home'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
   {
     path: '/',
     component: Home,
     redirect: '/dashboard',
+    // redirect: 'noredirec',
     name: 'Dashboard',
-    // redirect: '/table',
+    // redirect: '/order',
     hidden: true,
     children: [
       {
@@ -120,6 +120,7 @@ export const asyncRouterMap = [
     name: 'order',
     component: Home,
     alwaysShow: true,
+    redirct: '/order/orderList',
     meta: { title: '订单管理', icon: 'order', code: 'ordersManage' },
     children: [
       {

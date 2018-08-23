@@ -12,8 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       "/frontApi": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-        target:'http://www.backom.cn/manage',
-        // target:'http://193.112.224.86:8190/manage',
+        // target:'http://wx.oleccoffee.com/manage',
+        target:'http://203.195.171.224:8190/manage',
         // target:'http://193.112.224.86',
         pathRewrite: {
           "^/frontApi": ""

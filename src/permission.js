@@ -18,11 +18,11 @@ router.beforeEach((to, from, next) => {
       next({ path: '/login' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
-      console.log(store.getters)
+      // console.log(store.getters)
       if (store.getters.menus && store.getters.menus.length === 0) {
         // 判断菜单是否拉取
         store.dispatch('GetMenus').then(res => { // 拉取user_info
-          console.log(res.data)
+          // console.log(res.data)
           const menus = res.data
           store.dispatch('GenerateRoutes', { menus }).then(() => {
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表

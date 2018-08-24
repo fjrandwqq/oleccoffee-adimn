@@ -6,6 +6,13 @@ const getOrder = params => request({
   params
 })
 
+const getShopsByRole = () => request({
+  url: '/api/shop/list',
+  method: 'get'
+})
+
 export {
-  getOrder
+  getOrder,
+  getShopsByRole
 }
+

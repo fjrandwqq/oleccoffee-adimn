@@ -8,7 +8,11 @@ Description
     <div id="order-list">
         <el-form inline :model="form" class="search-form">
             <el-form-item label="店铺编号">
-                <el-input v-model="form.shopCode" placeholder="请输入店铺编号"></el-input>
+                <!-- <el-input v-model="form.shopCode" placeholder="请输入店铺编号"></el-input> -->
+                <el-select v-model="form.shopCode" placeholder="请选择" clearable>
+                    <el-option v-for="item in shops" :key="item.name" :label="item.name" :value="item.code">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="订单编号">
                 <el-input v-model="form.orderCode" placeholder="请输入订单编号"></el-input>
@@ -79,77 +83,85 @@ Description
 </template>
 
 <script>
-import { getOrder } from '@/api/order'
-export default {
-  data() {
-    return {
-      receiveTypeList: ['全部', '送货上门', '自提'],
-      statusList: ['全部', '确认收货', '待发货', '配送中', '未付款', '用户取消', '用户拒收'],
-      currentPage: 1,
-      pageSize: 10,
-      total: 0,
-      orderList: [],
-      dateRange: [],
-      form: {
-        shopCode: '',
-        receiveType: '',
-        orderCode: '',
-        userMobile: '',
-        userAddress: '',
-        orderStartDateTime: '',
-        orderEndDateTime: '',
-        status: '',
-        start: 0,
-        length: 10
+    import { getOrder, getShopsByRole } from '@/api/order'
+    export default {
+      data() {
+        return {
+          receiveTypeList: ['全部', '送货上门', '自提'],
+          statusList: ['全部', '确认收货', '待发货', '配送中', '未付款', '用户取消', '用户拒收'],
+          currentPage: 1,
+          pageSize: 10,
+          total: 0,
+          orderList: [],
+          dateRange: [],
+          form: {
+            shopCode: '',
+            receiveType: '',
+            orderCode: '',
+            userMobile: '',
+            userAddress: '',
+            orderStartDateTime: '',
+            orderEndDateTime: '',
+            status: '',
+            start: 0,
+            length: 10
+          },
+          shops: []
+        }
+      },
+      mounted() {
+        this.getAllShop()
+        this.search()
+      },
+      methods: {
+        search() {
+          this.$refs.tableWrapper.scrollTop = 0
+          if (this.form.status === '全部') {
+            this.form.status = ''
+          }
+          if (this.form.receiveType === '全部') {
+            this.form.receiveType = ''
+          }
+          this.form.orderStartDateTime = this.dateRange && this.dateRange[0] || ''
+          this.form.orderEndDateTime = this.dateRange && this.dateRange[1] || ''
+          this.form.start = (this.currentPage - 1) * this.pageSize
+          this.form.length = this.pageSize
+          this.getOrderList()
+        },
+        getOrderList() {
+          getOrder(this.form).then(({ data }) => {
+            const { datas = [], count = 0 } = data || {}
+            this.orderList = datas
+            this.total = count
+          })
+        },
+        handleSizeChange(pageSize) {
+          this.pageSize = pageSize
+          this.currentPage = 1
+          this.search()
+        },
+        handleCurrentChange(page) {
+          this.currentPage = page
+          this.search()
+        },
+        showDetail(data) {
+
+        },
+        editOrder() {
+
+        },
+        deleteOrder() {
+
+        },
+        getAllShop() {
+          getShopsByRole().then(({ data }) => {
+            this.shops = data || []
+            console.log(this.shops)
+          })
+        }
       }
+
     }
-  },
-  mounted() {
-    this.search()
-  },
-  methods: {
-    search() {
-      this.$refs.tableWrapper.scrollTop = 0
-      if (this.form.status === '全部') {
-        this.form.status = ''
-      }
-      if (this.form.receiveType === '全部') {
-        this.form.receiveType = ''
-      }
-      this.form.orderStartDateTime = this.dateRange && this.dateRange[0] || ''
-      this.form.orderEndDateTime = this.dateRange && this.dateRange[1] || ''
-      this.form.start = (this.currentPage - 1) * this.pageSize
-      this.form.length = this.pageSize
-      this.getOrderList()
-    },
-    getOrderList() {
-      getOrder(this.form).then(({ data }) => {
-        const { datas = [], count = 0 } = data || {}
-        this.orderList = datas
-        this.total = count
-      })
-    },
-    handleSizeChange(pageSize) {
-      this.pageSize = pageSize
-      this.currentPage = 1
-      this.search()
-    },
-    handleCurrentChange(page) {
-      this.currentPage = page
-      this.search()
-    },
-    showDetail(data) {
-
-    },
-    editOrder() {
-
-    },
-    deleteOrder() {
-
-    }
-  }
-
-}
 </script>
 
 <style lang="scss" scoped src="./OrderList.scss"></style>

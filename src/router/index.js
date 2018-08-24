@@ -29,7 +29,7 @@ export const constantRouterMap = [
     // redirect: '/dashboard',
     // redirect: 'noredirec',
     // name: 'Dashboard',
-    // redirect: '/order',
+    redirect: '/order/orderList',
     hidden: true
   //   children: [
   //     {
@@ -37,8 +37,8 @@ export const constantRouterMap = [
   //       component: () => import('@/views/dashboard/index')
   //     }
   //   ]
-  },
-  { path: '*', redirect: '/404', hidden: true }
+  }
+  // { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({

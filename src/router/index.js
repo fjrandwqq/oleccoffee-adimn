@@ -26,17 +26,17 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Home,
-    redirect: '/dashboard',
+    // redirect: '/dashboard',
     // redirect: 'noredirec',
-    name: 'Dashboard',
+    // name: 'Dashboard',
     // redirect: '/order',
-    hidden: true,
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index')
-      }
-    ]
+    hidden: true
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index')
+  //     }
+  //   ]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
@@ -120,7 +120,7 @@ export const asyncRouterMap = [
     name: 'order',
     component: Home,
     alwaysShow: true,
-    redirct: '/order/orderList',
+    redirect: '/order/orderList',
     meta: { title: '订单管理', icon: 'order', code: 'ordersManage' },
     children: [
       {

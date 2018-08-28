@@ -16,6 +16,9 @@
     .ol-table{
         height: 100%;
         overflow: auto;
+        /deep/ .disable-btn{
+            color:#eee;
+        }
     }
     .el-pagination{
         position: absolute;

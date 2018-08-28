@@ -58,9 +58,9 @@ Description
                 </el-table-column>
                 <el-table-column align="center" prop="receiveType" label="配送方式" width="100">
                 </el-table-column>
-                <!-- <el-table-column label="操作">
+                <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <span class="single-btn" @click="showDetail(scope.row)">查看</span>
+                        <!-- <span class="single-btn" @click="showDetail(scope.row)">查看</span>
                         <span class="single-btn" @click="editOrder(scope.$index, scope.row)">修改</span>
                         <span class="single-btn" @click="deleteOrder(scope.$index, scope.row)">删除</span>
                         <el-dropdown>
@@ -72,9 +72,11 @@ Description
                                 <el-dropdown-item>修改</el-dropdown-item>
                                 <el-dropdown-item>删除</el-dropdown-item>
                             </el-dropdown-menu>
-                        </el-dropdown>
+                        </el-dropdown> -->
+                       <span v-show="scope.row.status === '已完成'" class="single-btn disable-btn">完成</span>  
+                       <span v-show="scope.row.status !== '已完成'" class="single-btn" @click="finishOrder(scope.$index, scope.row)">完成</span>
                     </template>
-                </el-table-column> -->
+                </el-table-column>
             </el-table>
         </div>
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, sizes, prev, pager, next, jumper" :total="total">
@@ -83,7 +85,7 @@ Description
 </template>
 
 <script>
-    import { getOrder, getShopsByRole } from '@/api/order'
+    import { getOrder, getShopsByRole, finishOrder } from '@/api/order'
     export default {
       data() {
         return {
@@ -153,6 +155,12 @@ Description
         deleteOrder() {
 
         },
+        finishOrder(index) {
+          let params
+          finishOrder(params).then(res => {
+
+          })
+    },
         getAllShop() {
           getShopsByRole().then(({ data }) => {
             this.shops = data || []

@@ -14,7 +14,7 @@ Description
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="订单编号">
+            <el-form-item label="订单编号" >
                 <el-input v-model="form.orderCode" placeholder="请输入订单编号"></el-input>
             </el-form-item>
             <el-form-item label="收货地址">
@@ -42,7 +42,7 @@ Description
         </el-form>
         <div class="ol-table" ref="tableWrapper">
             <el-table :data="orderList" size="small" highlight-current-row border stripe style="width: 100%">
-                <el-table-column align="center" prop="code" label="订单号" width="180">
+                <el-table-column align="center" prop="code"   label="订单号" width="180">
                 </el-table-column>
                 <el-table-column align="center" prop="userMobile" label="收货电话" width="120">
                 </el-table-column>

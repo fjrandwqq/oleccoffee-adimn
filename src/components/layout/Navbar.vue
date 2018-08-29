@@ -2,22 +2,29 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper">
-        <img class="user-avatar" :src="avatar">
-        <i class="el-icon-caret-bottom"></i>
+    <div class="right-nav">
+      <div class="notice-wrapper">
+        <el-badge v-if="unfinishedOrders>0" :value="unfinishedOrders" class="item" @click.native.stop="refreshOrderList">
+          <img class="notice starFlick" src="@/images/notice.png" />
+        </el-badge>
       </div>
-      <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <!-- <router-link class="inlineBlock" to="/">
+      <el-dropdown class="avatar-container" trigger="click">
+        <div class="avatar-wrapper">
+          <img class="user-avatar" :src="avatar">
+          <i class="el-icon-caret-bottom"></i>
+        </div>
+        <el-dropdown-menu class="user-dropdown" slot="dropdown">
+          <!-- <router-link class="inlineBlock" to="/">
           <el-dropdown-item>
             主页
           </el-dropdown-item>
         </router-link> divided -->
-        <el-dropdown-item >
-          <span @click="logout" style="display:block;">退出</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+          <el-dropdown-item>
+            <span @click="logout" style="display:block;">退出</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
   </el-menu>
 </template>
 
@@ -33,9 +40,17 @@
     },
     computed: {
       ...mapGetters([
-        'sidebar'
-        // 'avatar'
+        'sidebar',
+        // 'avatar',
+        'unfinishedOrders'
       ])
+    },
+    mounted() {
+      this.$store.dispatch('getUnfinishedOrders')
+      // 临时方案，10秒钟获取一次未完成订单
+      setInterval(() => {
+        this.$store.dispatch('getUnfinishedOrders')
+      }, 15 * 1000)
     },
     data() {
       return {
@@ -50,6 +65,10 @@
         this.$store.dispatch('LogOut').then(() => {
           location.reload() // 为了重新实例化vue-router对象 避免bug
         })
+      },
+      refreshOrderList() {
+        console.log('111')
+        this.$root.$emit('showUnfinisnedOrderList')
       }
     }
   }
@@ -72,27 +91,50 @@
       top: 16px;
       color: red;
     }
-    .avatar-container {
-      height: 50px;
-      display: inline-block;
+    .right-nav {
       position: absolute;
       right: 35px;
-      .avatar-wrapper {
+      height: 50px;
+      top: 0;
+      .notice-wrapper {
+        height: 50px;
+        display: inline-block;
+        margin-right: 30px;
         cursor: pointer;
-        margin-top: 5px;
-        position: relative;
-        .user-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-        .el-icon-caret-bottom {
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
+      }
+      .avatar-container {
+        height: 50px;
+        display: inline-block;
+        .avatar-wrapper {
+          cursor: pointer;
+          margin-top: 5px;
+          position: relative;
+          .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+          }
+          .el-icon-caret-bottom {
+            position: absolute;
+            right: -20px;
+            top: 25px;
+            font-size: 12px;
+          }
         }
       }
+    }
+  }
+  .starFlick {
+    animation: starFlick 0.8s ease-out infinite;
+    -webkit-animation: starFlick 0.8s ease-out infinite;
+  }
+
+  @keyframes starFlick {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
     }
   }
 </style>

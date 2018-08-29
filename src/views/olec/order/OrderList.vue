@@ -52,13 +52,20 @@ Description
                 </el-table-column>
                 <el-table-column align="center" prop="status" label="支付状态" width="100">
                 </el-table-column>
+                <el-table-column align="center" label="订单状态" fixed='right' width="100">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.status === '已付款'" class="red-tip">未完成</span>
+                        <span v-else-if="scope.row.status === '已完成'" class="green-tip">完成</span>
+                        <span v-else class="normal-span">{{scope.row.status}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" prop="orderDateTime" label="下单时间">
                 </el-table-column>
                 <el-table-column align="center" prop="realTotalMoney" label="总价" width="100">
                 </el-table-column>
                 <el-table-column align="center" prop="receiveType" label="配送方式" width="100">
                 </el-table-column>
-                <el-table-column align="center" label="操作">
+                <el-table-column align="center" label="操作" fixed='right'>
                     <template slot-scope="scope">
                         <!-- <span class="single-btn" @click="showDetail(scope.row)">查看</span>
                         <span class="single-btn" @click="editOrder(scope.$index, scope.row)">修改</span>
@@ -73,8 +80,8 @@ Description
                                 <el-dropdown-item>删除</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown> -->
-                       <span v-show="scope.row.status === '已完成'" class="single-btn disable-btn">完成</span>  
-                       <span v-show="scope.row.status !== '已完成'" class="single-btn" @click="finishOrder(scope.$index, scope.row)">完成</span>
+                        <span v-show="scope.row.status === '已完成'" class="single-btn disable-btn">完成</span>
+                        <span v-show="scope.row.status !== '已完成'" class="single-btn" @click="finishOrder(scope.$index, scope.row)">完成</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -90,7 +97,7 @@ Description
       data() {
         return {
           receiveTypeList: ['全部', '送货上门', '自提'],
-          statusList: ['全部', '确认收货', '待发货', '配送中', '未付款', '用户取消', '用户拒收'],
+          statusList: ['全部', '用户拒收', '用户取消', '未付款', '已付款', '待发货', '配送中', '确认收货', '已完成'],
           currentPage: 1,
           pageSize: 10,
           total: 0,
@@ -114,6 +121,7 @@ Description
       mounted() {
         this.getAllShop()
         this.search()
+        this.$root.$on('showUnfinisnedOrderList', this.showUnfinisnedOrderList)
       },
       methods: {
         search() {
@@ -155,17 +163,24 @@ Description
         deleteOrder() {
 
         },
-        finishOrder(index) {
-          let params
-          finishOrder(params).then(res => {
-
+        finishOrder(index, row) {
+          finishOrder({ id: row.id }).then(res => {
+            if (res.status === '已完成') {
+              this.orderList[index].status = '已完成'
+            }
           })
-    },
+        },
         getAllShop() {
           getShopsByRole().then(({ data }) => {
             this.shops = data || []
             console.log(this.shops)
           })
+        },
+        showUnfinisnedOrderList() {
+          this.form = {
+            status: '已付款'
+          }
+          this.search()
         }
       }
 

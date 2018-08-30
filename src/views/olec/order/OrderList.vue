@@ -34,7 +34,7 @@ Description
                 </el-select>
             </el-form-item>
             <el-form-item label="下单时间">
-                <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" v-model="dateRange" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+                <el-date-picker value-format="yyyy-MM-dd" v-model="dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="search">查询</el-button>
@@ -81,7 +81,7 @@ Description
                             </el-dropdown-menu>
                         </el-dropdown> -->
                         <span v-show="scope.row.status === '已完成'" class="single-btn disable-btn">完成</span>
-                        <span v-show="scope.row.status !== '已完成'" class="single-btn" @click="finishOrder(scope.$index, scope.row)">完成</span>
+                        <span v-show="scope.row.status !== '已完成'" title="点击即可完成订单" class="single-btn" @click="finishOrder(scope.$index, scope.row)">完成</span>
                     </template>
                 </el-table-column>
             </el-table>

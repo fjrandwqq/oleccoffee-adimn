@@ -29,7 +29,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import Breadcrumb from '@/components/Breadcrumb'
   import Hamburger from '@/components/Hamburger'
 
@@ -46,10 +46,10 @@
       ])
     },
     mounted() {
-      this.$store.dispatch('getUnfinishedOrders')
+      this.getUnfinishedOrders()
       // 临时方案，10秒钟获取一次未完成订单
       setInterval(() => {
-        this.$store.dispatch('getUnfinishedOrders')
+        this.getUnfinishedOrders()
       }, 15 * 1000)
     },
     data() {
@@ -58,6 +58,9 @@
       }
     },
     methods: {
+      ...mapActions([
+        'getUnfinishedOrders'
+      ]),
       toggleSideBar() {
         this.$store.dispatch('ToggleSideBar')
       },
@@ -67,7 +70,6 @@
         })
       },
       refreshOrderList() {
-        console.log('111')
         this.$root.$emit('showUnfinisnedOrderList')
       }
     }

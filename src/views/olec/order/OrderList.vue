@@ -92,99 +92,109 @@ Description
 </template>
 
 <script>
-    import { getOrder, getShopsByRole, finishOrder } from '@/api/order'
-    export default {
-      data() {
-        return {
-          receiveTypeList: ['全部', '送货上门', '自提'],
-          statusList: ['全部', '用户拒收', '用户取消', '未付款', '已付款', '待发货', '配送中', '确认收货', '已完成'],
-          currentPage: 1,
-          pageSize: 10,
-          total: 0,
-          orderList: [],
-          dateRange: [],
-          form: {
-            shopCode: '',
-            receiveType: '',
-            orderCode: '',
-            userMobile: '',
-            userAddress: '',
-            orderStartDateTime: '',
-            orderEndDateTime: '',
-            status: '',
-            start: 0,
-            length: 10
-          },
-          shops: []
-        }
+import { getOrder, getShopsByRole, finishOrder } from '@/api/order'
+import { mapMutations, mapGetters } from 'vuex'
+export default {
+  data() {
+    return {
+      receiveTypeList: ['全部', '送货上门', '自提'],
+      statusList: ['全部', '用户拒收', '用户取消', '未付款', '已付款', '待发货', '配送中', '确认收货', '已完成'],
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
+      orderList: [],
+      dateRange: [],
+      form: {
+        shopCode: '',
+        receiveType: '',
+        orderCode: '',
+        userMobile: '',
+        userAddress: '',
+        orderStartDateTime: '',
+        orderEndDateTime: '',
+        status: '',
+        start: 0,
+        length: 10
       },
-      mounted() {
-        this.getAllShop()
-        this.search()
-        this.$root.$on('showUnfinisnedOrderList', this.showUnfinisnedOrderList)
-      },
-      methods: {
-        search() {
-          this.$refs.tableWrapper.scrollTop = 0
-          if (this.form.status === '全部') {
-            this.form.status = ''
-          }
-          if (this.form.receiveType === '全部') {
-            this.form.receiveType = ''
-          }
-          this.form.orderStartDateTime = this.dateRange && this.dateRange[0] || ''
-          this.form.orderEndDateTime = this.dateRange && this.dateRange[1] || ''
-          this.form.start = (this.currentPage - 1) * this.pageSize
-          this.form.length = this.pageSize
-          this.getOrderList()
-        },
-        getOrderList() {
-          getOrder(this.form).then(({ data }) => {
-            const { datas = [], count = 0 } = data || {}
-            this.orderList = datas
-            this.total = count
-          })
-        },
-        handleSizeChange(pageSize) {
-          this.pageSize = pageSize
-          this.currentPage = 1
-          this.search()
-        },
-        handleCurrentChange(page) {
-          this.currentPage = page
-          this.search()
-        },
-        showDetail(data) {
-
-        },
-        editOrder() {
-
-        },
-        deleteOrder() {
-
-        },
-        finishOrder(index, row) {
-          finishOrder({ id: row.id }).then(res => {
-            if (res.status === '已完成') {
-              this.orderList[index].status = '已完成'
-            }
-          })
-        },
-        getAllShop() {
-          getShopsByRole().then(({ data }) => {
-            this.shops = data || []
-            console.log(this.shops)
-          })
-        },
-        showUnfinisnedOrderList() {
-          this.form = {
-            status: '已付款'
-          }
-          this.search()
-        }
-      }
-
+      shops: []
     }
+  },
+  computed: {
+    ...mapGetters([
+      'unfinishedOrders'
+    ])
+  },
+  mounted() {
+    this.getAllShop()
+    this.search()
+    this.$root.$on('showUnfinisnedOrderList', this.showUnfinisnedOrderList)
+  },
+  methods: {
+    ...mapMutations([
+      'setUnfinishedOrders'
+    ]),
+    search() {
+      this.$refs.tableWrapper.scrollTop = 0
+      if (this.form.status === '全部') {
+        this.form.status = ''
+      }
+      if (this.form.receiveType === '全部') {
+        this.form.receiveType = ''
+      }
+      this.form.orderStartDateTime = this.dateRange && this.dateRange[0] || ''
+      this.form.orderEndDateTime = this.dateRange && this.dateRange[1] || ''
+      this.form.start = (this.currentPage - 1) * this.pageSize
+      this.form.length = this.pageSize
+      this.getOrderList()
+    },
+    getOrderList() {
+      getOrder(this.form).then(({ data }) => {
+        const { datas = [], count = 0 } = data || {}
+        this.orderList = datas
+        this.total = count
+      })
+    },
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize
+      this.currentPage = 1
+      this.search()
+    },
+    handleCurrentChange(page) {
+      this.currentPage = page
+      this.search()
+    },
+    showDetail(data) {
+
+    },
+    editOrder() {
+
+    },
+    deleteOrder() {
+
+    },
+    finishOrder(index, row) {
+      finishOrder({ id: row.id }).then(({ data }) => {
+        if (data.status === '已完成') {
+          this.orderList[index].status = '已完成'
+          this.setUnfinishedOrders(--this.unfinishedOrders)
+        }
+      })
+    },
+    getAllShop() {
+      getShopsByRole().then(({ data }) => {
+        this.shops = data || []
+        console.log(this.shops)
+      })
+    },
+    showUnfinisnedOrderList() {
+      this.form = {
+        status: '已付款'
+      }
+      this.search()
+    }
+  }
+
+}
 </script>
 
 <style lang="scss" scoped src="./OrderList.scss"></style>

@@ -8,7 +8,7 @@
           <img class="notice starFlick" src="@/images/notice.png" />
         </el-badge>
       </div>
-      <el-dropdown class="avatar-container" trigger="click">
+      <el-dropdown class="avatar-container" trigger="hover">
         <div class="avatar-wrapper">
           <img class="user-avatar" :src="avatar">
           <i class="el-icon-caret-bottom"></i>
@@ -32,7 +32,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import Breadcrumb from '@/components/Breadcrumb'
   import Hamburger from '@/components/Hamburger'
-
+  import userImg from '@/images/user.png'
   export default {
     components: {
       Breadcrumb,
@@ -54,7 +54,9 @@
     },
     data() {
       return {
-        avatar: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533460636268&di=7ab5a5d530f3fb6d2c505415222fe58b&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd52a2834349b033bda94010519ce36d3d439bdd5.jpg'
+        // avatar: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533460636268&di=7ab5a5d530f3fb6d2c505415222fe58b&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd52a2834349b033bda94010519ce36d3d439bdd5.jpg'
+        // avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
+        avatar: userImg
       }
     },
     methods: {
@@ -65,9 +67,14 @@
         this.$store.dispatch('ToggleSideBar')
       },
       logout() {
-        console.log('1111')
-        this.$store.dispatch('LogOut').then(() => {
-          location.reload() // 为了重新实例化vue-router对象 避免bug
+        this.$confirm('是否确认退出系统？', '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$store.dispatch('LogOut').then(() => {
+            location.reload() // 为了重新实例化vue-router对象 避免bug
+          })
         })
       },
       refreshOrderList() {

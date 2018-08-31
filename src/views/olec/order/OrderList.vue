@@ -15,31 +15,31 @@ Description
         </el-select>
       </el-form-item>
       <el-form-item label="订单编号">
-        <el-input  size="mini" v-model="form.orderCode" placeholder="请输入订单编号"></el-input>
+        <el-input size="mini" v-model="form.orderCode" placeholder="请输入订单编号"></el-input>
       </el-form-item>
       <el-form-item label="收货地址">
-        <el-input  size="mini" v-model="form.userAddress" placeholder="请输入收货地址"></el-input>
+        <el-input size="mini" v-model="form.userAddress" placeholder="请输入收货地址"></el-input>
       </el-form-item>
       <el-form-item label="收货电话">
-        <el-input  size="mini" v-model="form.userMobile" placeholder="请输入收货电话"></el-input>
+        <el-input size="mini" v-model="form.userMobile" placeholder="请输入收货电话"></el-input>
       </el-form-item>
       <el-form-item label="订单状态">
-        <el-select  size="mini" v-model="form.status" placeholder="请选择">
+        <el-select size="mini" v-model="form.status" placeholder="请选择">
           <el-option v-for="item in statusList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="配送方式">
-        <el-select  size="mini" v-model="form.receiveType" placeholder="请选择">
+        <el-select size="mini" v-model="form.receiveType" placeholder="请选择">
           <el-option v-for="item in receiveTypeList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="下单时间">
         <!-- <el-date-picker value-format="yyyy-MM-dd" v-model="date" type="" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker> -->
-        <el-date-picker  size="mini" v-model="selectDate" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+        <el-date-picker size="mini" v-model="selectDate" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button  size="mini" type="primary" @click="search">查询</el-button>
+        <el-button size="mini" type="primary" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
     <div class="ol-table" ref="tableWrapper">
@@ -56,20 +56,13 @@ Description
         </el-table-column>
         <el-table-column align="center" prop="remark" label="备注" width="100">
         </el-table-column>
-        <el-table-column align="center" prop="showTime"width="120" label="下单时间">
+        <el-table-column align="center" prop="showTime" width="120" label="下单时间">
         </el-table-column>
-           <el-table-column align="center" prop="receiveType" label="配送方式" width="100">
+        <el-table-column align="center" prop="receiveType" label="配送方式" width="100">
         </el-table-column>
         <el-table-column align="center" prop="userAddress" label="收货地址">
         </el-table-column>
         <el-table-column align="center" prop="status" label="支付状态" width="100">
-        </el-table-column>
-        <el-table-column align="center" label="订单状态" fixed='right' width="100">
-          <template slot-scope="scope">
-            <span v-if="scope.row.status === '已付款'" class="red-tip">未完成</span>
-            <span v-else-if="scope.row.status === '已完成'" class="green-tip">完成</span>
-            <span v-else class="normal-span">{{scope.row.status}}</span>
-          </template>
         </el-table-column>
         <el-table-column align="center" label="店员操作状态" fixed='right'>
           <template slot-scope="scope">
@@ -86,8 +79,8 @@ Description
                                 <el-dropdown-item>删除</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown> -->
-            <span v-show="scope.row.status === '已完成'" class="single-btn disable-btn">完成</span>
-            <span v-show="scope.row.status !== '已完成'" title="点击即可完成订单" class="single-btn" @click="finishOrder(scope.$index, scope.row)">完成</span>
+            <el-button size="mini" v-show="scope.row.status === '已完成'" type="success" icon="el-icon-success">已完成</el-button>
+            <el-button size="mini" v-show="scope.row.status !== '已完成'" type="danger" icon="el-icon-success" @click="confirmFinishOrder(scope.$index, scope.row)">完成</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -155,7 +148,7 @@ Description
       ])
     },
     watch: {
-  
+
     },
     mounted() {
       this.getAllShop()
@@ -219,11 +212,31 @@ Description
       deleteOrder() {
 
       },
+      /**
+       * 弹框确认是否完成
+       */
+      confirmFinishOrder(index, row) {
+        this.$confirm('是否确认完成该订单？', '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.finishOrder(index, row)
+        }).catch(() => {
+
+        })
+      },
       finishOrder(index, row) {
         finishOrder({ id: row.id }).then(({ data }) => {
           if (data.status === '已完成') {
             this.orderList[index].status = '已完成'
             this.setUnfinishedOrders(--this.unfinishedOrders)
+            this.$message({
+              message: '手动完成订单成功',
+              type: 'success'
+            })
+          } else {
+            this.$message.error('出现异常，请联系开发人员')
           }
         })
       },
@@ -240,7 +253,6 @@ Description
         this.search()
       }
     }
-
   }
 </script>
 

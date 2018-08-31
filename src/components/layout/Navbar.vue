@@ -4,8 +4,9 @@
     <breadcrumb></breadcrumb>
     <div class="right-nav">
       <div class="notice-wrapper">
+        <div class="tip" v-if="unfinishedOrders>0">点击喇叭即可查看未完成订单>></div>
         <el-badge v-if="unfinishedOrders>0" :value="unfinishedOrders" class="item" @click.native.stop="refreshOrderList">
-          <img class="notice starFlick" src="@/images/notice.png" />
+          <img class="notice" src="@/images/notice_new.png" />
         </el-badge>
       </div>
       <el-dropdown class="avatar-container" trigger="hover">
@@ -111,6 +112,33 @@
         display: inline-block;
         margin-right: 30px;
         cursor: pointer;
+        .tip {
+          display: inline-block;
+          text-align: center;
+          margin-top: -10px;
+          vertical-align: top;
+          background-image: -webkit-linear-gradient(
+            left,
+            #147b96,
+            #88ff00 25%,
+            #147b96 50%,
+            #88ff00 75%,
+            #147b96
+          );
+          -webkit-text-fill-color: transparent;
+          -webkit-text-fill-color: transparent;
+          -webkit-background-clip: text;
+          -webkit-background-size: 200% 100%;
+          -webkit-animation: masked-animation 4s infinite linear;
+        }
+      }
+      @keyframes masked-animation {
+        0% {
+          background-position: 0 0;
+        }
+        100% {
+          background-position: -100% 0;
+        }
       }
       .avatar-container {
         height: 50px;
@@ -138,7 +166,6 @@
     animation: starFlick 0.8s ease-out infinite;
     -webkit-animation: starFlick 0.8s ease-out infinite;
   }
-
   @keyframes starFlick {
     from {
       opacity: 1;

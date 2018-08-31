@@ -16,7 +16,7 @@ const order = {
           length: 10,
           status: '已付款'
         }
-        getOrder(params).then(({ data }) => {
+        getOrder(params).then(data => {
           commit('setUnfinishedOrders', data.count)
         })
       })

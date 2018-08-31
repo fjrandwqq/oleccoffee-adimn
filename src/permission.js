@@ -21,9 +21,7 @@ router.beforeEach((to, from, next) => {
       // console.log(store.getters)
       if (store.getters.menus && store.getters.menus.length === 0) {
         // 判断菜单是否拉取
-        store.dispatch('GetMenus').then(res => { // 拉取user_info
-          // console.log(res.data)
-          const menus = res.data
+        store.dispatch('GetMenus').then(menus => { // 拉取user_info
           store.dispatch('GenerateRoutes', { menus }).then(() => {
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record

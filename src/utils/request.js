@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import { Message, MessageBox } from 'element-ui'
+import { MessageBox } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
 
@@ -65,5 +65,25 @@ service.interceptors.request.use(config => {
 //     return Promise.reject(error)
 //   }
 // )
+service.interceptors.response.use(response => {
+  return response.data
+}, error => {
+  debugger
+  if (error.response.status) {
+    switch (error.response.status) {
+      case 401:
+        MessageBox.confirm('登录超时，是否重新登录', '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('FedLogOut').then(() => {
+            location.reload()// 为了重新实例化vue-router对象 避免bug
+          })
+        })
+        return Promise.reject(error.response.data) // 返回接口返回的错误信息
+    }
+  }
+})
 
 export default service

@@ -30,10 +30,10 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(res => {
-          if (res.data.status === 'success') {
-            setToken(res.data.token)
-            commit('SET_TOKEN', res.data.token)
-            commit('SET_NAME', res.username)
+          if (res.status === 'success') {
+            setToken(res.token)
+            commit('SET_TOKEN', res.token)
+            // commit('SET_NAME', res.username)
             commit('SET_AVATAR', 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1533460636268&di=7ab5a5d530f3fb6d2c505415222fe58b&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fd52a2834349b033bda94010519ce36d3d439bdd5.jpg')
             resolve()
           } else {
@@ -67,10 +67,10 @@ const user = {
     // 获取菜单
     GetMenus({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getMenus().then(res => {
-          if (res.data && res.data.length > 0) {
-            commit('SET_MENUS', res.data)
-            resolve(res)
+        getMenus().then(data => {
+          if (data && data.length > 0) {
+            commit('SET_MENUS', data)
+            resolve(data)
           } else {
             reject('获取菜单失败')
           }

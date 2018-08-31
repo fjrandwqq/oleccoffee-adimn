@@ -180,7 +180,7 @@ Description
         this.getOrderList()
       },
       getOrderList() {
-        getOrder(this.form).then(({ data }) => {
+        getOrder(this.form).then(data => {
           const { datas = [], count = 0 } = data || {}
           datas.map(e => {
             const good = e.ordersGoods[0]
@@ -227,7 +227,7 @@ Description
         })
       },
       finishOrder(index, row) {
-        finishOrder({ id: row.id }).then(({ data }) => {
+        finishOrder({ id: row.id }).then(data => {
           if (data.status === '已完成') {
             this.orderList[index].status = '已完成'
             this.setUnfinishedOrders(--this.unfinishedOrders)
@@ -241,7 +241,7 @@ Description
         })
       },
       getAllShop() {
-        getShopsByRole().then(({ data }) => {
+        getShopsByRole().then(data => {
           this.shops = data || []
           this.shops.length > 0 && (this.form.shopCode = this.shops[0].code)
         })
@@ -250,6 +250,7 @@ Description
         this.form = {
           status: '已付款'
         }
+        this.selectDate = null
         this.search()
       }
     }

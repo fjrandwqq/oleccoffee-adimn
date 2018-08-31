@@ -4,7 +4,9 @@
     <breadcrumb></breadcrumb>
     <div class="right-nav">
       <div class="notice-wrapper">
-        <div class="tip" v-if="unfinishedOrders>0">点击喇叭即可查看未完成订单>></div>
+        <div class="tip" v-if="unfinishedOrders>0">点击喇叭即可查看未完成订单>>
+          <span></span>
+        </div>
         <el-badge v-if="unfinishedOrders>0" :value="unfinishedOrders" class="item" @click.native.stop="refreshOrderList">
           <img class="notice" src="@/images/notice_new.png" />
         </el-badge>

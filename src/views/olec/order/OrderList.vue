@@ -64,7 +64,7 @@ Description
         </el-table-column>
         <el-table-column align="center" prop="status" label="支付状态" width="100">
         </el-table-column>
-        <el-table-column align="center" label="店员操作状态" fixed='right'>
+        <el-table-column align="center" label="店员操作状态" width="140" fixed='right'>
           <template slot-scope="scope">
             <!-- <span class="single-btn" @click="showDetail(scope.row)">查看</span>
                         <span class="single-btn" @click="editOrder(scope.$index, scope.row)">修改</span>
@@ -80,7 +80,7 @@ Description
                             </el-dropdown-menu>
                         </el-dropdown> -->
             <el-button size="mini" v-show="scope.row.status === '已完成'" type="success" icon="el-icon-success">已完成</el-button>
-            <el-button size="mini" v-show="scope.row.status !== '已完成'" type="danger" icon="el-icon-success" @click="confirmFinishOrder(scope.$index, scope.row)">完成</el-button>
+            <el-button size="mini" v-show="scope.row.status !== '已完成'" type="danger"  @click="confirmFinishOrder(scope.$index, scope.row)">完成</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -184,14 +184,20 @@ Description
           const { datas = [], count = 0 } = data || {}
           datas.map(e => {
             const good = e.ordersGoods[0]
-            e.content = `${good.goodsName} ${good.goodsNum}杯*${good.goodsPrice}元`
-            const date = new Date(e.orderDateTime)
-            const time = e.orderDateTime.split(' ')[1]
-            e.showTime = `${date.getMonth()}月${date.getDay()}日 ${time}`
+            e.content = `${good.goodsName} ${good.goodsNum}杯*${good.goodsRealPrice}元`
+            if (e.orderStartDateTime) {
+              const date = new Date(e.orderDateTime)
+              const time = e.orderDateTime.split(' ')[1]
+              e.showTime = `${date.getMonth()}月${date.getDay()}日 ${time}`
+            } else {
+              e.showTime = ''
+            }
             return e
           })
           this.orderList = datas
           this.total = count
+        }).catch(error => {
+          console.log(error)
         })
       },
       handleSizeChange(pageSize) {

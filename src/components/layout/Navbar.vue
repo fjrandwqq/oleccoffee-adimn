@@ -8,10 +8,10 @@
           <span></span>
         </div>
         <el-badge v-if="unfinishedOrders>0" :value="unfinishedOrders" class="item" @click.native.stop="refreshOrderList">
-          <img class="notice" src="@/images/notice_new.png" />
+          <img class="notice starFlick" src="@/images/notice.png" />
         </el-badge>
       </div>
-      <el-dropdown class="avatar-container" trigger="hover">
+      <el-dropdown class="avatar-container" trigger="hover" @command="handleCommand">
         <div class="avatar-wrapper">
           <img class="user-avatar" :src="avatar">
           <i class="el-icon-caret-bottom"></i>
@@ -22,8 +22,8 @@
             主页
           </el-dropdown-item>
         </router-link> divided -->
-          <el-dropdown-item>
-            <span @click="logout" style="display:block;">退出</span>
+          <el-dropdown-item command="logout">
+            <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -69,6 +69,11 @@
       toggleSideBar() {
         this.$store.dispatch('ToggleSideBar')
       },
+      handleCommand(command) {
+        switch (command) {
+          case 'logout':this.logout(); break
+        }
+      },
       logout() {
         this.$confirm('是否确认退出系统？', '温馨提示', {
           confirmButtonText: '确定',
@@ -78,6 +83,8 @@
           this.$store.dispatch('LogOut').then(() => {
             location.reload() // 为了重新实例化vue-router对象 避免bug
           })
+        }).catch(() => {
+  
         })
       },
       refreshOrderList() {

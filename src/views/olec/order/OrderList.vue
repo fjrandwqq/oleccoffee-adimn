@@ -54,9 +54,13 @@ Description
         </el-table-column>
         <el-table-column align="center" prop="realTotalMoney" label="总价" width="100">
         </el-table-column>
+         <el-table-column align="center" prop="deliveryMoney" label="配送费用" width="100">
+        </el-table-column>
         <el-table-column align="center" prop="remark" label="备注" width="100">
         </el-table-column>
         <el-table-column align="center" prop="showTime" width="120" label="下单时间">
+        </el-table-column>
+        <el-table-column align="center" prop="showReceiveDateTime" width="120" label="自提或收货时间">
         </el-table-column>
         <el-table-column align="center" prop="receiveType" label="配送方式" width="100">
         </el-table-column>
@@ -160,7 +164,6 @@ Description
         'setUnfinishedOrders'
       ]),
       search() {
-        this.$refs.tableWrapper.scrollTop = 0
         if (this.form.status === '全部') {
           this.form.status = ''
         }
@@ -183,14 +186,21 @@ Description
         getOrder(this.form).then(data => {
           const { datas = [], count = 0 } = data || {}
           datas.map(e => {
-            const good = e.ordersGoods[0]
-            e.content = `${good.goodsName} ${good.goodsNum}杯*${good.goodsRealPrice}元`
-            if (e.orderStartDateTime) {
+            const good = e.ordersGoods && e.ordersGoods[0] || {}
+            good.goodsName && (e.content = `${good.goodsName} ${good.goodsNum}杯*${good.goodsRealPrice}元`)
+            if (e.orderDateTime) {
               const date = new Date(e.orderDateTime)
               const time = e.orderDateTime.split(' ')[1]
               e.showTime = `${date.getMonth()}月${date.getDay()}日 ${time}`
             } else {
               e.showTime = ''
+            }
+            if (e.receiveDateTime) {
+              const date = new Date(e.receiveDateTime)
+              const dateStr = Format(date, 'yyyy-MM-dd hh:mm:ss')
+              e.showReceiveDateTime = `${date.getMonth()}月${date.getDay()}日 ${dateStr.split(' ')[1]}`
+            } else {
+              e.showReceiveDateTime = ''
             }
             return e
           })
@@ -236,7 +246,7 @@ Description
         finishOrder({ id: row.id }).then(data => {
           if (data.status === '已完成') {
             this.orderList[index].status = '已完成'
-            this.setUnfinishedOrders(--this.unfinishedOrders)
+            this.setUnfinishedOrders(this.unfinishedOrders - 1)
             this.$message({
               message: '手动完成订单成功',
               type: 'success'

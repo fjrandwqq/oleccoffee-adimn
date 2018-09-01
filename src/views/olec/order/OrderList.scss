@@ -15,15 +15,12 @@
     .ol-table{
         height: 100%;
         overflow: auto;
-        /deep/ .disable-btn{
-            cursor:not-allowed;
-        }
-        /deep/ .red-tip {
-            color:red;
-        }
-        /deep/ .green-tip{
-            color:green;
-        }
+    }
+    .el-form-item{
+        margin-bottom:0;
+    }
+    .el-input, .el-select{
+        width:130px;
     }
     .el-pagination{
         // position: absolute;

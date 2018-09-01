@@ -38,6 +38,8 @@ service.interceptors.response.use(response => {
           store.dispatch('FedLogOut').then(() => {
             location.reload()// 为了重新实例化vue-router对象 避免bug
           })
+        }).catch(() => {
+
         })
         return Promise.reject(error.response.data) // 返回接口返回的错误信息
     }

@@ -5,7 +5,7 @@ Description
 @version 1.0.0
 -->
 <template>
-  <div>
+  <div id="setting">
       
   </div>
 </template>

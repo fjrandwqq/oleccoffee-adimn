@@ -44,7 +44,7 @@ Description 配置页面
 <script>
 import { getShopsByRole } from '@/api/order'
 
-import { getGoods } from '@/api/setting'
+import { getGoods,updateShop,updateGoods} from '@/api/setting'
 export default {
   data() {
     return {
@@ -118,11 +118,22 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.setCanDelivery(canDelivery)
+          this.updateShop(canDelivery)
         })
         .catch(() => {
           this.canDelivery = !this.canDelivery
         })
+    },
+    updateShop(canDelivery){
+      let shop=this.shops.find(e=>{
+        return e.code === this.searchParams.shopCode;
+      })
+      updateShop(shop.id,{canDelivery}).then(res=>{
+        this.$$Message.success('修改店铺属性成功');
+      }).catch(e=>{
+        console.log(e);
+        this.$Message.error('网站出错，请联系开发人员');
+      });
     },
     changeGoodsStatus(index, row) {
       let msg = ''
@@ -132,13 +143,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.sendAjax(index, row)
+        this.updateGoods(index,row)
       }).catch(() => {
 
       })
     },
-    sendAjax(index, row) {
-
+    updateGoods(index, row) {
+      let status=row.status === '在售'? '售罄':'在售';
+      updateGoods(row.id,{status}).then(res=>{
+        this.goodsList[index].status=res.status;
+      }).catch(e=>{
+        console.log(e);
+        this.$Message.error('网站出错，请联系开发人员');
+      })
     }
   }
 }

@@ -6,6 +6,20 @@ const getGoods = params => request({
   params
 })
 
+const updateShop=(shopId,params) =>request({
+  url: `/api/shop/${shopId}`,
+  method: 'put',
+  params
+})
+
+const updateGoods=(goodsId,params) =>request({
+  url: `/api/goods/${goodsId}`,
+  method: 'put',
+  params
+})
+
 export {
-  getGoods
+  getGoods,
+  updateShop,
+  updateGoods
 }

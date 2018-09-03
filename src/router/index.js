@@ -96,8 +96,7 @@ export const asyncRouterMap = [
       {
         path: 'table',
         name: 'shopsManage',
-        // component: () => import('@/views/table/index'),
-        component: () => import('@/views/olec/setting/Setting'),
+        component: () => import('@/views/table/index'),
         meta: { title: '店铺列表', icon: 'table', code: 'shopList' }
       }
     ]
@@ -142,7 +141,7 @@ export const asyncRouterMap = [
         path: 'settingDetail',
         name: 'settingMange',
         component: () => import('@/views/olec/setting/Setting'),
-        meta: { title: '配置详情', icon: 'order', code: 'settingDetail' }
+        meta: { title: '配置详情', icon: 'setting', code: 'settingDetail' }
       }
     ]
   }

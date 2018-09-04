@@ -25,6 +25,7 @@ service.interceptors.request.use(config => {
 })
 
 service.interceptors.response.use(response => {
+  console.log(response.data)
   return response.data
 }, error => {
   if (error.response.status) {

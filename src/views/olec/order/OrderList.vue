@@ -191,14 +191,15 @@ Description
             if (e.orderDateTime) {
               const date = new Date(e.orderDateTime)
               const time = e.orderDateTime.split(' ')[1]
-              e.showTime = `${date.getMonth()}月${date.getDay()}日 ${time}`
+              e.showTime = `${date.getMonth() + 1}月${date.getDate()}日 ${time}`
             } else {
               e.showTime = ''
             }
             if (e.receiveDateTime) {
               const date = new Date(e.receiveDateTime)
               const dateStr = Format(date, 'yyyy-MM-dd hh:mm:ss')
-              e.showReceiveDateTime = `${date.getMonth()}月${date.getDay()}日 ${dateStr.split(' ')[1]}`
+  
+              e.showReceiveDateTime = `${date.getMonth() + 1}月${date.getDate()}日 ${dateStr.split(' ')[1]}`
             } else {
               e.showReceiveDateTime = ''
             }

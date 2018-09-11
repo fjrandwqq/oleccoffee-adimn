@@ -105,7 +105,6 @@ export default {
       this.search()
     },
     changeShop(code) {
-      debugger
       const shop = this.shops.find((e, index) => {
         if (e.code === code) {
           this.shopIndex = index

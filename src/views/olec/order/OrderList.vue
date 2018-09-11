@@ -54,7 +54,7 @@ Description
         </el-table-column>
         <el-table-column align="center" prop="realTotalMoney" label="总价" width="100">
         </el-table-column>
-         <el-table-column align="center" prop="deliveryMoney" label="配送费用" width="100">
+        <el-table-column align="center" prop="deliveryMoney" label="配送费用" width="100">
         </el-table-column>
         <el-table-column align="center" prop="remark" label="备注" width="100">
         </el-table-column>
@@ -84,7 +84,7 @@ Description
                             </el-dropdown-menu>
                         </el-dropdown> -->
             <el-button size="mini" v-show="scope.row.status === '已完成'" type="success" icon="el-icon-success">已完成</el-button>
-            <el-button size="mini" v-show="scope.row.status !== '已完成'" type="danger"  @click="confirmFinishOrder(scope.$index, scope.row)">完成</el-button>
+            <el-button size="mini" v-show="scope.row.status !== '已完成'" type="danger" @click="confirmFinishOrder(scope.$index, scope.row)">完成</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -186,8 +186,13 @@ Description
         getOrder(this.form).then(data => {
           const { datas = [], count = 0 } = data || {}
           datas.map(e => {
-            const good = e.ordersGoods && e.ordersGoods[0] || {}
-            good.goodsName && (e.content = `${good.goodsName} ${good.goodsNum}杯*${good.goodsRealPrice}元`)
+            e.content = ''
+            for (let i = 0; i < e.ordersGoods.length; i++) {
+              if (e.ordersGoods[i].specJson !== null && e.ordersGoods[i].specJson !== '') {
+                const specListText = JSON.parse(e.ordersGoods[i].specJson).map(e => e.name).join(' ')
+                e.content += `${e.ordersGoods[i].goodsName || ''} ${specListText} ${e.ordersGoods[i].goodsNum}杯*${e.ordersGoods[i].goodsRealPrice}元`
+              }
+            }
             if (e.orderDateTime) {
               const date = new Date(e.orderDateTime)
               const time = e.orderDateTime.split(' ')[1]
@@ -198,7 +203,7 @@ Description
             if (e.receiveDateTime) {
               const date = new Date(e.receiveDateTime)
               const dateStr = Format(date, 'yyyy-MM-dd hh:mm:ss')
-  
+
               e.showReceiveDateTime = `${date.getMonth() + 1}月${date.getDate()}日 ${dateStr.split(' ')[1]}`
             } else {
               e.showReceiveDateTime = ''

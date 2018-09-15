@@ -197,7 +197,7 @@ Description
             }
             if (e.receiveDateTime) {
               const date = new Date(e.receiveDateTime)
-              const dateStr = Format(date, 'yyyy-MM-dd hh:mm:ss')
+              const dateStr = Format(date, 'yyyy-MM-dd HH:mm:ss')
               e.showReceiveDateTime = `${date.getMonth()}月${date.getDay()}日 ${dateStr.split(' ')[1]}`
             } else {
               e.showReceiveDateTime = ''

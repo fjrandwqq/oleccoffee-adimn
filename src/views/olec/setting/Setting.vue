@@ -105,7 +105,6 @@ export default {
       this.search()
     },
     changeShop(code) {
-      debugger
       const shop = this.shops.find((e, index) => {
         if (e.code === code) {
           this.shopIndex = index
@@ -114,7 +113,6 @@ export default {
         return false
       })
       this.canDelivery = shop.canDelivery
-      console.log(this.canDelivery)
     },
     changeSwitch(canDelivery) {
       let msg = ''
@@ -136,12 +134,18 @@ export default {
         })
     },
     updateShop(canDelivery) {
-      const shop = this.shops.find(e => {
-        return e.code === this.searchParams.shopCode
+      let shopindex
+      const shop = this.shops.find((e, index) => {
+        if (e.code === this.searchParams.shopCode) {
+          shopindex = index
+          return true
+        }
+        return false
       })
       updateShop(shop.id, { canDelivery })
         .then(res => {
           this.$message.success('修改店铺是否外送属性成功')
+          shopindex != null && (this.shops[shopindex].canDelivery = canDelivery)
         })
         .catch(e => {
           console.log(e)

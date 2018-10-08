@@ -1,0 +1,20 @@
+#setting{
+    .searchPane{
+        padding:10px 10px 0;
+        .row{
+            margin-bottom: 15px;
+        }
+    }
+    .el-pagination{
+        padding: 20px;
+        float:right;
+    }
+    .el-table{
+        .greenTip{
+            color:green;
+        }
+        .redTip{
+            color:red;
+        }
+    }
+}

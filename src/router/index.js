@@ -8,7 +8,6 @@ Vue.use(Router)
 
 /* Layout */
 import Home from '../views/Home'
-
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
 * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
@@ -24,18 +23,22 @@ import Home from '../views/Home'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
   {
     path: '/',
     component: Home,
-    redirect: '/dashboard',
-    name: 'Dashboard',
-    hidden: true,
-    children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
-    }]
+    // redirect: '/dashboard',
+    // redirect: 'noredirec',
+    // name: 'Dashboard',
+    redirect: '/order/orderList',
+    hidden: true
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index')
+  //     }
+  //   ]
   }
+  // { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
@@ -44,41 +47,102 @@ export default new Router({
   routes: constantRouterMap
 })
 
+// export const asyncRouterMap = [
+//   {
+//     path: '/example',
+//     component: Home,
+//     redirect: '/example/table',
+//     name: 'Example',
+//     meta: { title: '例子', icon: 'example' },
+//     children: [
+//       {
+//         path: 'table',
+//         name: 'table',
+//         component: () => import('@/views/table/index'),
+//         meta: { title: '表格', icon: 'table' }
+//       },
+//       {
+//         path: 'tree',
+//         name: 'tree',
+//         component: () => import('@/views/tree/index'),
+//         meta: { title: '树', icon: 'tree', roles: ['admin'] }
+//       }
+//     ]
+//   },
+
+//   {
+//     path: '/form',
+//     component: Home,
+//     children: [
+//       {
+//         path: 'index',
+//         name: 'Form',
+//         component: resolve => require(['@/views/form/index'], resolve),
+//         meta: { title: '表单', icon: 'form' }
+//       }
+//     ]
+//   },
+//   { path: '*', redirect: '/404', hidden: true }
+// ];
+
 export const asyncRouterMap = [
   {
-    path: '/example',
+    path: '/shops',
+    name: 'shops',
     component: Home,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: '例子', icon: 'example' },
+    alwaysShow: true,
+    meta: { title: '店铺管理', icon: 'example', code: 'shopManage' },
     children: [
       {
         path: 'table',
-        name: 'table',
+        name: 'shopsManage',
         component: () => import('@/views/table/index'),
-        meta: { title: '表格', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '树', icon: 'tree', roles: ['admin'] }
+        meta: { title: '店铺列表', icon: 'table', code: 'shopList' }
       }
     ]
   },
-
   {
-    path: '/form',
+    path: '/goods',
+    name: 'goods',
     component: Home,
+    alwaysShow: true,
+    meta: { title: '商品管理', icon: 'tree', code: 'goodsManage' },
     children: [
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: '表单', icon: 'form' }
+        path: 'tree',
+        name: 'goodsManage',
+        component: () => import('@/views/tree/index'),
+        meta: { title: '商品列表', icon: 'table', code: 'goodsList' }
       }
     ]
-  },
-
-  { path: '*', redirect: '/404', hidden: true }
+  }, {
+    path: '/order',
+    name: 'order',
+    component: Home,
+    alwaysShow: true,
+    redirect: '/order/orderList',
+    meta: { title: '订单管理', icon: 'order', code: 'ordersManage' },
+    children: [
+      {
+        path: 'orderList',
+        name: 'orderMange',
+        component: () => import('@/views/olec/order/OrderList'),
+        meta: { title: '订单列表', icon: 'order', code: 'ordersList' }
+      }
+    ]
+  }, {
+    path: '/setting',
+    name: 'setting',
+    component: Home,
+    alwaysShow: true,
+    meta: { title: '配置管理', icon: 'setting', code: 'settingManage' },
+    children: [
+      {
+        path: 'settingDetail',
+        name: 'settingMange',
+        component: () => import('@/views/olec/setting/Setting'),
+        meta: { title: '配置详情', icon: 'setting', code: 'settingDetail' }
+      }
+    ]
+  }
 ]

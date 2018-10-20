@@ -18,6 +18,11 @@ import store from './store'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import * as customFilter from './utils/filter'
+
+Object.keys(customFilter).forEach(key => {
+  Vue.filter(key, customFilter[key])
+})
 
 Vue.use(ElementUI)
 

@@ -31,12 +31,12 @@ export const constantRouterMap = [
     // name: 'Dashboard',
     redirect: '/order/orderList',
     hidden: true
-  //   children: [
-  //     {
-  //       path: 'dashboard',
-  //       component: () => import('@/views/dashboard/index')
-  //     }
-  //   ]
+    //   children: [
+    //     {
+    //       path: 'dashboard',
+    //       component: () => import('@/views/dashboard/index')
+    //     }
+    //   ]
   }
   // { path: '*', redirect: '/404', hidden: true }
 ]
@@ -97,7 +97,7 @@ export const asyncRouterMap = [
         path: 'table',
         name: 'shopsManage',
         component: () => import('@/views/table/index'),
-        meta: { title: '店铺列表', icon: 'table', code: 'shopList' }
+        meta: { title: '店铺列表', code: 'shopList' }
       }
     ]
   },
@@ -112,7 +112,7 @@ export const asyncRouterMap = [
         path: 'tree',
         name: 'goodsManage',
         component: () => import('@/views/tree/index'),
-        meta: { title: '商品列表', icon: 'table', code: 'goodsList' }
+        meta: { title: '商品列表', code: 'goodsList' }
       }
     ]
   }, {
@@ -127,7 +127,7 @@ export const asyncRouterMap = [
         path: 'orderList',
         name: 'orderMange',
         component: () => import('@/views/olec/order/OrderList'),
-        meta: { title: '订单列表', icon: 'order', code: 'ordersList' }
+        meta: { title: '订单列表', code: 'ordersList' }
       }
     ]
   }, {
@@ -141,7 +141,22 @@ export const asyncRouterMap = [
         path: 'settingDetail',
         name: 'settingMange',
         component: () => import('@/views/olec/setting/Setting'),
-        meta: { title: '配置详情', icon: 'setting', code: 'settingDetail' }
+        meta: { title: '配置详情', code: 'settingDetail' }
+      }
+    ]
+  }, {
+    path: '/analysis',
+    name: 'analysis',
+    component: Home,
+    alwaysShow: true,
+    redirect: '/analysis/summaryToday',
+    meta: { title: '报表统计', icon: 'analysis', code: 'analysis' },
+    children: [
+      {
+        path: 'summaryToday',
+        name: 'summaryToday',
+        component: () => import('@/views/olec/analysis/summaryToday/SummaryToday.vue'),
+        meta: { title: '今日汇总', code: 'summaryToday' }
       }
     ]
   }

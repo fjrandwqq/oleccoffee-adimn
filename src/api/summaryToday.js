@@ -9,14 +9,14 @@ const total = params => request({
 const goodsCatSales = (params) => request({
   url: `/api/statistics/goodsCatSales`,
   method: 'get',
-  data: params
+  params
 })
 
 const goodsSales = (params) =>
   request({
     url: `/api/statistics/goodsSales`,
     method: 'get',
-    data: params
+    params
   })
 
 export {

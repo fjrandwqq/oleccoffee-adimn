@@ -7,7 +7,7 @@ Description
 <template>
   <div id="summary-today">
     <div class="page-control">
-      <el-select size="large" v-model="searchParams.shopId" placeholder="请选择" @change="changeShop">
+      <el-select size="large" v-model="shopId" placeholder="请选择" @change="changeShop">
         <el-option v-for="(item,index) in shopList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -37,12 +37,12 @@ Description
     </div>
     <el-row class="goods-cat-part" :gutter="20">
       <el-col :md="18" :xs="24">
-        <el-table :data="goodsCatSales" style="width: 100%">
+        <el-table :data="goodsCatSales" style="width: 100%" @sort-change="goodsCatSort">
           <el-table-column prop="id" label="id">
           </el-table-column>
           <el-table-column prop="goodsCatName" label="分类" width="180">
           </el-table-column>
-          <el-table-column prop="sales" label="销量" sortable width="180">
+          <el-table-column prop="sales" label="销量" sortable="custom" width="180">
             <template slot-scope="scope">
               <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
                 {{scope.row.amount}}
@@ -54,7 +54,7 @@ Description
               {{scope.row.salesProportion}}%
             </template>
           </el-table-column>
-          <el-table-column prop="amount" label="总额" sortable>
+          <el-table-column prop="amount" label="总额" sortable="custom">
             <template slot-scope="scope">
               <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
                 {{scope.row.amount}}
@@ -79,14 +79,14 @@ Description
       <h2>商品销量</h2>
     </div>
     <div class="goods-table">
-      <el-table :data="goodsSales" style="width: 100%">
+      <el-table :data="goodsSales" style="width: 100%" @change="goodsSalesSort">
         <el-table-column prop="id" label="id">
         </el-table-column>
         <el-table-column prop="goodsName" label="商品名" width="180">
         </el-table-column>
         <el-table-column prop="goodsCatName" label="分类" width="180">
         </el-table-column>
-        <el-table-column prop="sales" label="销量" sortable>
+        <el-table-column prop="sales" label="销量" sortable="custom">
           <template slot-scope="scope">
             <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
               {{scope.row.amount}}
@@ -98,7 +98,7 @@ Description
             {{scope.row.salesProportion}}%
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="总额" sortable>
+        <el-table-column prop="amount" label="总额" sortable="custom">
           <template slot-scope="scope">
             <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
               {{scope.row.amount}}
@@ -122,8 +122,14 @@ import { echartColors } from '@/config/global'
 export default {
   data() {
     return {
-      searchParams: {
-        shopId: ''
+      shopId: null,
+      goodsSearchParams: {
+        sort: 'sales',
+        desc: 'desc'
+      },
+      goodsCatSearchParams: {
+        sort: 'sales',
+        desc: 'desc'
       },
       shopList: [],
       summaryData: {
@@ -185,9 +191,9 @@ export default {
         title: {
           top: 20,
           textStyle: {
-            fontSize: 15,
+            fontSize: 20,
             lineHeight: 1,
-            fontWeight: 'normal'
+            fontWeight: 'bold'
           }
         },
         tooltip: {
@@ -210,7 +216,7 @@ export default {
       getShopsByRole().then(data => {
         this.shopList = data || []
         if (this.shopList.length > 0) {
-          this.searchParams.shopId = this.shopList[0].id
+          this.shopId = this.shopList[0].id
           this.changeShop()
         }
       })
@@ -219,11 +225,11 @@ export default {
     changeShop(shopId) {
       this.getTotal()
       this.getGoodsCatSales()
-      this.getGoodssALES()
+      this.getGoodsSales()
     },
     getTotal() {
       const params = {
-        shopId: this.searchParams.shopId
+        shopId: this.shopId
       }
       total(params).then(res => {
         this.summaryData = res
@@ -231,10 +237,11 @@ export default {
     },
     getGoodsCatSales() {
       const params = {
-        shopId: this.searchParams.shopId,
-        sort: 'sales',
-        desc: 'desc'
+        shopId: this.shopId,
+        sort: this.goodsCatSearchParams.sort,
+        desc: this.goodsCatSearchParams.desc
       }
+      console.log(params)
       goodsCatSales(params).then(res => {
         this.goodsCatSales = res || []
         // 转成饼图需要的数据
@@ -255,21 +262,36 @@ export default {
               show: false
             },
             data: this.goodsCatSalesPie
-          }]
+          }
+        ]
         this.$nextTick(e => {
           this.chartsObj.goodsCatChart.setOption(this.goodsCatOption)
         })
       })
     },
-    getGoodssALES() {
+    getGoodsSales() {
       const params = {
-        shopId: this.searchParams.shopId,
-        sort: 'sales',
-        desc: 'desc'
+        shopId: this.shopId,
+        sort: this.goodsSearchParams.sort,
+        desc: this.goodsSearchParams.desc
       }
       goodsSales(params).then(res => {
         this.goodsSales = res || []
       })
+    },
+    goodsCatSort(params) {
+      this.goodsCatSearchParams = {
+        sort: params.prop || 'sales',
+        desc: params.order === 'ascending' ? 'asc' : 'desc'
+      }
+      this.getGoodsCatSales()
+    },
+    goodsSalesSort(params) {
+      this.goodsSearchParams = {
+        sort: params.prop || 'sales',
+        desc: params.order === 'ascending' ? 'asc' : 'desc'
+      }
+      this.getGoodsSales()
     }
   }
 }

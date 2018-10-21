@@ -19,12 +19,14 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 import * as customFilter from './utils/filter'
+const echarts = require('echarts')
 
 Object.keys(customFilter).forEach(key => {
   Vue.filter(key, customFilter[key])
 })
 
 Vue.use(ElementUI)
+Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
 

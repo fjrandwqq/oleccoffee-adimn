@@ -7,4 +7,6 @@ const sysInfo = {
   logoFold: logoFold
 }
 
-export { sysInfo }
+const echartColors = ['#ff7f50', '#9fd7fb', '#e18cde', '#13C2C2', '#F04864', '#8543E0']
+
+export { sysInfo, echartColors }

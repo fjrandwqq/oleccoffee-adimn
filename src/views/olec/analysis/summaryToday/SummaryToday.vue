@@ -38,14 +38,14 @@ Description
     <el-row class="goods-cat-part" :gutter="20">
       <el-col :md="18" :xs="24">
         <el-table :data="goodsCatSales" style="width: 100%" @sort-change="goodsCatSort">
-          <el-table-column prop="id" label="id">
-          </el-table-column>
+          <!-- <el-table-column prop="id" label="id">
+          </el-table-column> -->
           <el-table-column prop="goodsCatName" label="分类" width="180">
           </el-table-column>
           <el-table-column prop="sales" label="销量" sortable="custom" width="180">
             <template slot-scope="scope">
               <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
-                {{scope.row.amount}}
+                {{scope.row.sales}}
               </div>
             </template>
           </el-table-column>
@@ -80,8 +80,8 @@ Description
     </div>
     <div class="goods-table">
       <el-table :data="goodsSales" style="width: 100%" @sort-change="goodsSalesSort">
-        <el-table-column prop="id" label="id">
-        </el-table-column>
+        <!-- <el-table-column prop="id" label="id">
+        </el-table-column> -->
         <el-table-column prop="goodsName" label="商品名" width="180">
         </el-table-column>
         <el-table-column prop="goodsCatName" label="分类" width="180">
@@ -89,7 +89,7 @@ Description
         <el-table-column prop="sales" label="销量" sortable="custom">
           <template slot-scope="scope">
             <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
-              {{scope.row.amount}}
+              {{scope.row.sales}}
             </div>
           </template>
         </el-table-column>

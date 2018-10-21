@@ -79,7 +79,7 @@ Description
       <h2>商品销量</h2>
     </div>
     <div class="goods-table">
-      <el-table :data="goodsSales" style="width: 100%" @change="goodsSalesSort">
+      <el-table :data="goodsSales" style="width: 100%" @sort-change="goodsSalesSort">
         <el-table-column prop="id" label="id">
         </el-table-column>
         <el-table-column prop="goodsName" label="商品名" width="180">

@@ -112,189 +112,249 @@ Description
         </el-table-column>
       </el-table>
     </div>
+    <!-- 一元商品统 -->
+    <div class="bl-header">
+      <h2>一元商品销量</h2>
+    </div>
+    <div class="goods-table">
+      <el-table :data="specialGoodsSales" style="width: 100%" @sort-change="specialGoodsSalesSort">
+        <el-table-column prop="goodsName" label="商品名" width="180">
+        </el-table-column>
+        <el-table-column prop="goodsCatName" label="分类" width="180">
+        </el-table-column>
+        <el-table-column prop="sales" label="销量" sortable="custom">
+          <template slot-scope="scope">
+            <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
+              {{scope.row.sales}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="salesProportion" label="销量占比">
+          <template slot-scope="scope">
+            {{scope.row.salesProportion}}%
+          </template>
+        </el-table-column>
+        <el-table-column prop="amount" label="总额" sortable="custom">
+          <template slot-scope="scope">
+            <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
+              {{scope.row.amount}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="amountProportion" label="总额占比">
+          <template slot-scope="scope">
+            {{scope.row.amountProportion}}%
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
 <script>
-import { total, goodsCatSales, goodsSales } from '@/api/summaryToday'
-import { getShopsByRole } from '@/api/order'
-import { echartColors } from '@/config/global'
-export default {
-  data() {
-    return {
-      shopId: null,
-      goodsSearchParams: {
-        sort: 'sales',
-        desc: 'desc'
-      },
-      goodsCatSearchParams: {
-        sort: 'sales',
-        desc: 'desc'
-      },
-      shopList: [],
-      summaryData: {
-        amount: 0,
-        oneYuanSales: 0,
-        sales: 0,
-        average: 0
-      },
-      goodsCatSales: [
-        {
-          id: 1,
-          goodsCatName: '',
-          sales: 0,
-          salesProportion: 0,
-          amount: 0,
-          amountProportion: 0
-        }
-      ],
-      goodsSales: [
-        {
-          id: 1,
-          goodsName: '',
-          goodsCatName: '',
-          sales: 0,
-          salesProportion: 0,
-          amount: 0,
-          amountProportion: 0
-        }
-      ],
-      chartsObj: {}
-    }
-  },
-  created() {
-    this.setPieOption()
-    this.getAllShop()
-  },
-  mounted() {
-    this.chartsObj.goodsCatChart = this.$echarts.init(
-      document.querySelector('.goodsCat-analysis')
-    )
-    window.onresize = () => {
-      this.handleChartResize()
-    }
-  },
-  methods: {
-    handleChartResize() {
-      this.$nextTick(() => {
-        for (const i in this.chartsObj) {
-          this.chartsObj[i].resize()
-        }
-      })
-    },
-    /**
-     * 饼图参数
-     */
-    setPieOption() {
-      this.goodsCatOption = {
-        color: echartColors,
-        title: {
-          top: 20,
-          textStyle: {
-            fontSize: 20,
-            lineHeight: 1,
-            fontWeight: 'bold'
-          }
+  import { total, goodsCatSales, goodsSales } from '@/api/summaryToday'
+  import { getShopsByRole } from '@/api/order'
+  import { echartColors } from '@/config/global'
+  export default {
+    data() {
+      return {
+        shopId: null,
+        goodsSearchParams: {
+          sort: 'sales',
+          desc: 'desc'
         },
-        tooltip: {
-          backgroundColor: 'rgba(255,255,255,0.7)',
-          borderColor: '#333',
-          borderWidth: 1,
-          textStyle: {
-            color: '#000000'
-          }
+        goodsCatSearchParams: {
+          sort: 'sales',
+          desc: 'desc'
         },
-        series: {
-          type: 'pie',
-          selectedMode: 'single',
-          radius: ['100', '100%'],
-          center: ['50%', '50%']
-        }
-      }
-    },
-    getAllShop() {
-      getShopsByRole().then(data => {
-        this.shopList = data || []
-        if (this.shopList.length > 0) {
-          this.shopId = this.shopList[0].id
-          this.changeShop()
-        }
-      })
-    },
-
-    changeShop(shopId) {
-      this.getTotal()
-      this.getGoodsCatSales()
-      this.getGoodsSales()
-    },
-    getTotal() {
-      const params = {
-        shopId: this.shopId
-      }
-      total(params).then(res => {
-        this.summaryData = res
-      })
-    },
-    getGoodsCatSales() {
-      const params = {
-        shopId: this.shopId,
-        sort: this.goodsCatSearchParams.sort,
-        desc: this.goodsCatSearchParams.desc
-      }
-      console.log(params)
-      goodsCatSales(params).then(res => {
-        this.goodsCatSales = res || []
-        // 转成饼图需要的数据
-        this.goodsCatSalesPie = this.goodsCatSales.map(e => {
-          return {
-            name: e.goodsCatName,
-            value: e.sales
-          }
-        })
-        this.goodsCatOption.title.text = '销量统计'
-        this.goodsCatOption.series = [
+        specialGoodsSearchParams: {
+          sort: 'sales',
+          desc: 'desc'
+        },
+        shopList: [],
+        summaryData: {
+          amount: 0,
+          oneYuanSales: 0,
+          sales: 0,
+          average: 0
+        },
+        goodsCatSales: [
           {
-            type: 'pie',
-            name: '销量统计',
-            selectedMode: 'single',
-            center: ['50%', '50%'],
-            label: {
-              show: false
-            },
-            data: this.goodsCatSalesPie
+            id: 1,
+            goodsCatName: '',
+            sales: 0,
+            salesProportion: 0,
+            amount: 0,
+            amountProportion: 0
           }
-        ]
-        this.$nextTick(e => {
-          this.chartsObj.goodsCatChart.setOption(this.goodsCatOption)
+        ],
+        goodsSales: [
+          {
+            id: 1,
+            goodsName: '',
+            goodsCatName: '',
+            sales: 0,
+            salesProportion: 0,
+            amount: 0,
+            amountProportion: 0
+          }
+        ],
+        specialGoodsSales: [],
+        chartsObj: {}
+      }
+    },
+    created() {
+      this.setPieOption()
+      this.getAllShop()
+    },
+    mounted() {
+      this.chartsObj.goodsCatChart = this.$echarts.init(
+        document.querySelector('.goodsCat-analysis')
+      )
+      window.onresize = () => {
+        this.handleChartResize()
+      }
+    },
+    methods: {
+      handleChartResize() {
+        this.$nextTick(() => {
+          for (const i in this.chartsObj) {
+            this.chartsObj[i].resize()
+          }
         })
-      })
-    },
-    getGoodsSales() {
-      const params = {
-        shopId: this.shopId,
-        sort: this.goodsSearchParams.sort,
-        desc: this.goodsSearchParams.desc
+      },
+      /**
+       * 饼图参数
+       */
+      setPieOption() {
+        this.goodsCatOption = {
+          color: echartColors,
+          title: {
+            top: 20,
+            textStyle: {
+              fontSize: 20,
+              lineHeight: 1,
+              fontWeight: 'bold'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(255,255,255,0.7)',
+            borderColor: '#333',
+            borderWidth: 1,
+            textStyle: {
+              color: '#000000'
+            }
+          },
+          series: {
+            type: 'pie',
+            selectedMode: 'single',
+            radius: ['100', '100%'],
+            center: ['50%', '50%']
+          }
+        }
+      },
+      getAllShop() {
+        getShopsByRole().then(data => {
+          this.shopList = data || []
+          if (this.shopList.length > 0) {
+            this.shopId = this.shopList[0].id
+            this.changeShop()
+          }
+        })
+      },
+
+      changeShop(shopId) {
+        this.getTotal()
+        this.getGoodsCatSales()
+        this.getGoodsSales()
+        this.getSpecialGoodsSales()
+      },
+      getTotal() {
+        const params = {
+          shopId: this.shopId
+        }
+        total(params).then(res => {
+          this.summaryData = res
+        })
+      },
+      getGoodsCatSales() {
+        const params = {
+          shopId: this.shopId,
+          sort: this.goodsCatSearchParams.sort,
+          desc: this.goodsCatSearchParams.desc
+        }
+        console.log(params)
+        goodsCatSales(params).then(res => {
+          this.goodsCatSales = res || []
+          // 转成饼图需要的数据
+          this.goodsCatSalesPie = this.goodsCatSales.map(e => {
+            return {
+              name: e.goodsCatName,
+              value: e.sales
+            }
+          })
+          this.goodsCatOption.title.text = '销量统计'
+          this.goodsCatOption.series = [
+            {
+              type: 'pie',
+              name: '销量统计',
+              selectedMode: 'single',
+              center: ['50%', '50%'],
+              label: {
+                show: false
+              },
+              data: this.goodsCatSalesPie
+            }
+          ]
+          this.$nextTick(e => {
+            this.chartsObj.goodsCatChart.setOption(this.goodsCatOption)
+          })
+        })
+      },
+      getGoodsSales() {
+        const params = {
+          shopId: this.shopId,
+          sort: this.goodsSearchParams.sort,
+          desc: this.goodsSearchParams.desc
+        }
+        goodsSales(params).then(res => {
+          this.goodsSales = res || []
+        })
+      },
+      getSpecialGoodsSales() {
+        const params = {
+          shopId: this.shopId,
+          sort: this.specialGoodsSearchParams.sort,
+          desc: this.specialGoodsSearchParams.desc,
+          isYiYuanSales: true
+        }
+        goodsSales(params).then(res => {
+          this.specialGoodsSales = res || []
+        })
+      },
+      goodsCatSort(params) {
+        this.goodsCatSearchParams = {
+          sort: params.prop || 'sales',
+          desc: params.order === 'ascending' ? 'asc' : 'desc'
+        }
+        this.getGoodsCatSales()
+      },
+      goodsSalesSort(params) {
+        this.goodsSearchParams = {
+          sort: params.prop || 'sales',
+          desc: params.order === 'ascending' ? 'asc' : 'desc'
+        }
+        this.getGoodsSales()
+      },
+      specialGoodsSalesSort(params) {
+        this.specialGoodsSearchParams = {
+          sort: params.prop || 'sales',
+          desc: params.order === 'ascending' ? 'asc' : 'desc'
+        }
+        this.getSpecialGoodsSales()
       }
-      goodsSales(params).then(res => {
-        this.goodsSales = res || []
-      })
-    },
-    goodsCatSort(params) {
-      this.goodsCatSearchParams = {
-        sort: params.prop || 'sales',
-        desc: params.order === 'ascending' ? 'asc' : 'desc'
-      }
-      this.getGoodsCatSales()
-    },
-    goodsSalesSort(params) {
-      this.goodsSearchParams = {
-        sort: params.prop || 'sales',
-        desc: params.order === 'ascending' ? 'asc' : 'desc'
-      }
-      this.getGoodsSales()
     }
   }
-}
 </script>
 
 <style lang="scss" scoped src="./SummaryToday.scss">

@@ -31,6 +31,9 @@ Description
         <p>平均消费（元） </p>
       </div>
     </div>
+    <div class="wrapper">
+      <div class="line-chart"></div>
+    </div>
     <!-- 商品分类统计 -->
     <div class="bl-header">
       <h2>分类销量统计</h2>
@@ -211,6 +214,10 @@ Description
       this.chartsObj.goodsCatChart = this.$echarts.init(
         document.querySelector('.goodsCat-analysis')
       )
+      this.chartsObj.lineChart = this.$echarts.init(
+        document.querySelector('.line-chart')
+      )
+      this.setLineOption()
       window.onresize = () => {
         this.handleChartResize()
       }
@@ -352,6 +359,62 @@ Description
           desc: params.order === 'ascending' ? 'asc' : 'desc'
         }
         this.getSpecialGoodsSales()
+      },
+      setLineOption() {
+        this.lineOption = {
+          title: {
+            text: '统计趋势图'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['营业总额', '一元数量', '出单票数', '平均消费']
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataZoom: {
+                yAxisIndex: 'none'
+              },
+              dataView: { readOnly: false },
+              magicType: { type: ['line', 'bar'] },
+              restore: {},
+              saveAsImage: {}
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false
+          },
+          yAxis: {
+            type: 'value',
+            axisLabel: {
+              formatter: '{value}'
+            }
+          },
+          series: [
+            {
+              name: '最高气温',
+              type: 'line',
+              data: [11, 11, 15, 13, 12, 13, 10],
+              markPoint: {
+                data: [
+                  { type: 'max', name: '最大值' },
+                  { type: 'min', name: '最小值' }
+                ]
+              },
+              markLine: {
+                data: [
+                  { type: 'average', name: '平均值' }
+                ]
+              }
+            }]
+        }
+      },
+  
+      activeTab() {
+
       }
     }
   }

@@ -33,7 +33,7 @@ Description
     </div>
     <div class="line-chart-wrapper">
       <div class="bl-header">
-        <el-date-picker v-model="datarange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        <el-date-picker v-model="daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
         </el-date-picker>
         <tool-box :btnList="tabsList" v-model="activeTab" @on-change="changeTab"></tool-box>
       </div>
@@ -205,8 +205,8 @@ Description
           value: 'average',
           label: '平均消费'
         }],
-  
         daterange: ['2018-06-12', '2018-09-18'],
+        activeTab: 'amount',
 
         goodsCatSales: [
           {
@@ -397,18 +397,10 @@ Description
           tooltip: {
             trigger: 'axis'
           },
-          legend: {
-            data: ['营业总额', '一元数量', '出单票数', '平均消费']
-          },
+
           toolbox: {
             show: true,
             feature: {
-              dataZoom: {
-                yAxisIndex: 'none'
-              },
-              dataView: { readOnly: false },
-              magicType: { type: ['line', 'bar'] },
-              restore: {},
               saveAsImage: {}
             }
           },
@@ -452,10 +444,47 @@ Description
         }
         totalByDate(params).then(res => {
           this.totalData = res
+          this.changeTab('amount')
         })
       },
       changeTab(value) {
-
+        let title = ''
+        switch (value) {
+          case 'amount':
+            title = '营业总额'
+            break
+          case 'oneYuanSales':
+            title = '一元数量'
+            break
+          case 'sales':
+            title = '出单票数'
+            break
+          case 'average':
+            title = '平均消费'
+            break
+        }
+        this.lineOption.title.text = title
+        this.lineOption.lengend = {
+          data: [title]
+        }
+        this.lineOption.xAxis.data = this.totalData[value].map(e => e.date)
+        this.lineOption.series = [{
+          name: title,
+          type: 'line',
+          data: this.totalData[value].map(e => e[value]),
+          markPoint: {
+            data: [
+              { type: 'max', name: '最大值' },
+              { type: 'min', name: '最小值' }
+            ]
+          },
+          markLine: {
+            data: [
+              { type: 'average', name: '平均值' }
+            ]
+          }
+        }]
+        this.chartsObj.lineChart.setOption(this.lineOption)
       }
     }
   }

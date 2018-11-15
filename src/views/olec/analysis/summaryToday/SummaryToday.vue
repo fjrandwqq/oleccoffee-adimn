@@ -31,7 +31,12 @@ Description
         <p>平均消费（元） </p>
       </div>
     </div>
-    <div class="wrapper">
+    <div class="line-chart-wrapper">
+      <div class="bl-header">
+        <el-date-picker v-model="datarange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
+        <tool-box :btnList="tabsList" v-model="activeTab" @on-change="changeTab"></tool-box>
+      </div>
       <div class="line-chart"></div>
     </div>
     <!-- 商品分类统计 -->
@@ -155,10 +160,14 @@ Description
 </template>
 
 <script>
-  import { total, goodsCatSales, goodsSales } from '@/api/summaryToday'
+  import { total, goodsCatSales, goodsSales, totalByDate } from '@/api/summaryToday'
   import { getShopsByRole } from '@/api/order'
   import { echartColors } from '@/config/global'
+  import ToolBox from '@/components/toolBox/ToolBox'
   export default {
+    components: {
+      ToolBox
+    },
     data() {
       return {
         shopId: null,
@@ -174,13 +183,31 @@ Description
           sort: 'sales',
           desc: 'desc'
         },
-        shopList: [],
         summaryData: {
           amount: 0,
           oneYuanSales: 0,
           sales: 0,
           average: 0
         },
+        shopList: [],
+
+        // 折线图的参数
+        tabsList: [{
+          value: 'amount',
+          label: '营业总额'
+        }, {
+          value: 'oneYuanSales',
+          label: '一元数量'
+        }, {
+          value: 'sales',
+          label: '出单票数'
+        }, {
+          value: 'average',
+          label: '平均消费'
+        }],
+  
+        daterange: ['2018-06-12', '2018-09-18'],
+
         goodsCatSales: [
           {
             id: 1,
@@ -204,6 +231,7 @@ Description
         ],
         specialGoodsSales: [],
         chartsObj: {}
+
       }
     },
     created() {
@@ -221,6 +249,7 @@ Description
       window.onresize = () => {
         this.handleChartResize()
       }
+      this.getTotalData()
     },
     methods: {
       handleChartResize() {
@@ -412,8 +441,20 @@ Description
             }]
         }
       },
-  
-      activeTab() {
+      /**
+       * 获取营业数据总数，对应第一个折线统计图
+       */
+      getTotalData() {
+        const params = {
+          id: this.shopId,
+          orderStartDateTime: this.daterange[0],
+          orderEndDateTime: this.daterange[1]
+        }
+        totalByDate(params).then(res => {
+          this.totalData = res
+        })
+      },
+      changeTab(value) {
 
       }
     }

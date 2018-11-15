@@ -19,8 +19,16 @@ const goodsSales = (params) =>
     params
   })
 
+const totalByDate = (params) => {
+  request({
+    url: '/api/statistics/totalByDate',
+    method: 'get',
+    params
+  })
+}
 export {
   total,
   goodsCatSales,
-  goodsSales
+  goodsSales,
+  totalByDate
 }

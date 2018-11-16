@@ -79,6 +79,8 @@ Description
     float: right;
     position: relative;
     height: 100%;
+    margin:0;
+    padding:0;
     li {
       display: inline-block;
       padding: 16px 16px 14px;

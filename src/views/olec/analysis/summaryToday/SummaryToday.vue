@@ -33,7 +33,7 @@ Description
     </div>
     <div class="line-chart-wrapper">
       <div class="bl-header">
-        <el-date-picker v-model="daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        <el-date-picker v-model="daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="changeDate" :disabledDate="disabledDate">
         </el-date-picker>
         <tool-box :btnList="tabsList" v-model="activeTab" @on-change="changeTab"></tool-box>
       </div>
@@ -205,7 +205,11 @@ Description
           value: 'average',
           label: '平均消费'
         }],
-        daterange: ['2018-06-12', '2018-09-18'],
+        daterange: [],
+        disabledDate: (date) => {
+          console.log(date)
+          return new Date(date).getTime() >= Date.now()
+        },
         activeTab: 'amount',
 
         goodsCatSales: [
@@ -304,6 +308,8 @@ Description
         this.getGoodsCatSales()
         this.getGoodsSales()
         this.getSpecialGoodsSales()
+
+        this.getTotalData()
       },
       getTotal() {
         const params = {
@@ -392,12 +398,12 @@ Description
       setLineOption() {
         this.lineOption = {
           title: {
-            text: '统计趋势图'
+            text: '统计趋势图',
+            left: 'center'
           },
           tooltip: {
             trigger: 'axis'
           },
-
           toolbox: {
             show: true,
             feature: {
@@ -485,6 +491,10 @@ Description
           }
         }]
         this.chartsObj.lineChart.setOption(this.lineOption)
+      },
+      changeDate() {
+        this.getTotalData()
+        this.changeTab(this.activeTab)
       }
     }
   }

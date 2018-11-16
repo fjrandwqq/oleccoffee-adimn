@@ -112,4 +112,8 @@
     background: yellow;
     height: 100%;
   }
+
+  /deep/ .el-range-separator{
+    padding:0;
+  }
 }

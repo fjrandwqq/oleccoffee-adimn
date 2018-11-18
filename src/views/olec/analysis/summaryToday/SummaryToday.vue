@@ -397,6 +397,7 @@ Description
       },
       setLineOption() {
         this.lineOption = {
+          color: echartColors,
           title: {
             text: '统计趋势图',
             left: 'center'

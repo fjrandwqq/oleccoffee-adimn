@@ -11,6 +11,8 @@ Description
         <el-option v-for="(item,index) in shopList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
+       <el-date-picker v-model="daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="changeDate" :disabledDate="disabledDate">
+        </el-date-picker>
     </div>
     <!-- 全部统计 -->
     <div class="data-box">
@@ -33,8 +35,7 @@ Description
     </div>
     <div class="line-chart-wrapper">
       <div class="bl-header">
-        <el-date-picker v-model="daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="changeDate" :disabledDate="disabledDate">
-        </el-date-picker>
+        <h2>发展趋势</h2>
         <tool-box :btnList="tabsList" v-model="activeTab" @on-change="changeTab"></tool-box>
       </div>
       <div class="line-chart"></div>
@@ -313,7 +314,9 @@ Description
       },
       getTotal() {
         const params = {
-          shopId: this.shopId
+          shopId: this.shopId,
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
         }
         total(params).then(res => {
           this.summaryData = res
@@ -323,7 +326,9 @@ Description
         const params = {
           shopId: this.shopId,
           sort: this.goodsCatSearchParams.sort,
-          desc: this.goodsCatSearchParams.desc
+          desc: this.goodsCatSearchParams.desc,
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
         }
         console.log(params)
         goodsCatSales(params).then(res => {
@@ -357,7 +362,9 @@ Description
         const params = {
           shopId: this.shopId,
           sort: this.goodsSearchParams.sort,
-          desc: this.goodsSearchParams.desc
+          desc: this.goodsSearchParams.desc,
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
         }
         goodsSales(params).then(res => {
           this.goodsSales = res || []
@@ -368,7 +375,9 @@ Description
           shopId: this.shopId,
           sort: this.specialGoodsSearchParams.sort,
           desc: this.specialGoodsSearchParams.desc,
-          isYiYuanSales: true
+          isYiYuanSales: true,
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
         }
         goodsSales(params).then(res => {
           this.specialGoodsSales = res || []
@@ -444,7 +453,6 @@ Description
        * 获取营业数据总数，对应第一个折线统计图
        */
       getTotalData() {
-        debugger
         const params = {
           id: this.shopId,
           orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
@@ -510,6 +518,11 @@ Description
         return currentdate
       },
       changeDate() {
+        this.getTotal()
+        this.getGoodsCatSales()
+        this.getGoodsSales()
+        this.getSpecialGoodsSales()
+  
         this.getTotalData()
         this.changeTab(this.activeTab)
       }

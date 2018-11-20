@@ -13,6 +13,10 @@ Description
       </el-select>
        <el-date-picker v-model="daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="changeDate" :disabledDate="disabledDate">
         </el-date-picker>
+        <el-button :type="selectedDate==='today'?'primary':''" @click="selectDate('today')">今日</el-button>
+        <el-button :type="selectedDate==='yestoday'?'primary':''" @click="selectDate('yestoday')">昨日</el-button>
+        <el-button :type="selectedDate==='week'?'primary':''" @click="selectDate('week')">本周</el-button>
+        <el-button :type="selectedDate==='month'?'primary':''" @click="selectDate('month')">本月</el-button>
     </div>
     <!-- 全部统计 -->
     <div class="data-box">
@@ -235,8 +239,9 @@ Description
           }
         ],
         specialGoodsSales: [],
-        chartsObj: {}
+        chartsObj: {},
 
+        selectedDate: 'today'
       }
     },
     created() {
@@ -525,6 +530,15 @@ Description
   
         this.getTotalData()
         this.changeTab(this.activeTab)
+      },
+      selectDate(role) {
+        this.selectedDate = role
+        switch (role) {
+          case 'today':break
+          case 'yestoday':break
+          case 'week':break
+          case 'month':break
+        }
       }
     }
   }

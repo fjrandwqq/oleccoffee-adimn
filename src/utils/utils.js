@@ -1,4 +1,5 @@
-const Format = function format(date, fmt) {
+
+const Format = (date, fmt) => {
   const o = {
     'M+': date.getMonth() + 1,
     'd+': date.getDate(),
@@ -25,7 +26,32 @@ const Format = function format(date, fmt) {
   return fmt
 }
 
+const getDateStr = AddDayCount => {
+  const dd = new Date()
+  dd.setDate(dd.getDate() + AddDayCount)
+  const y = dd.getFullYear()
+  let m = dd.getMonth() + 1
+  let d = dd.getDate()
+  m < 10 && (m = '0' + m)
+  d < 10 && (d = '0' + d)
+  return y + '-' + m + '-' + d
+}
+
+// 获取今天之前最近星期一的日期,字符串
+const getMondayDate = () => {
+  const date = new Date()
+  date.setDate(date.getDate() - (date.getDay() - 1))
+  const y = date.getFullYear()
+  let m = date.getMonth() + 1
+  let d = date.getDate()
+  m < 10 && (m = '0' + m)
+  d < 10 && (d = '0' + d)
+  return y + '-' + m + '-' + d
+}
+
 export {
-  Format
+  Format,
+  getDateStr,
+  getMondayDate
 }
 

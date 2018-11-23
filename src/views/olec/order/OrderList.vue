@@ -35,7 +35,8 @@ Description
       </el-form-item>
       <el-form-item label="下单时间">
         <!-- <el-date-picker value-format="yyyy-MM-dd" v-model="date" type="" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker> -->
-        <el-date-picker size="mini" v-model="selectDate" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+        <el-date-picker size="mini" v-model="selectDate" align="right" type="date" placeholder="选择日期"
+                        :picker-options="pickerOptions">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -83,214 +84,223 @@ Description
                                 <el-dropdown-item>删除</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown> -->
-            <el-button size="mini" v-show="scope.row.status === '已完成'" type="success" icon="el-icon-success">已完成</el-button>
-            <el-button size="mini" v-show="scope.row.status !== '已完成'" type="danger" @click="confirmFinishOrder(scope.$index, scope.row)">完成</el-button>
+            <el-button size="mini" v-show="scope.row.status === '已完成'" type="success" icon="el-icon-success">已完成
+            </el-button>
+            <el-button size="mini" v-show="scope.row.status !== '已完成'" type="danger"
+                       @click="confirmFinishOrder(scope.$index, scope.row)">完成
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination v-show="total>0" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, sizes, prev, pager, next, jumper" :total="total">
+    <el-pagination v-show="total>0" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                   :current-page="currentPage" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
   </div>
 </template>
 
 <script>
-import { getOrder, getShopsByRole, finishOrder } from '@/api/order'
-import { mapMutations, mapGetters } from 'vuex'
-import { Format } from '@/utils/utils'
-export default {
-  data() {
-    return {
-      receiveTypeList: ['全部', '送货上门', '自提'],
-      statusList: [
-        '全部',
-        '用户拒收',
-        '用户取消',
-        '未付款',
-        '已付款',
-        '待发货',
-        '配送中',
-        '确认收货',
-        '已完成'
-      ],
-      currentPage: 1,
-      pageSize: 10,
-      total: 0,
-      orderList: [],
-      dateRange: [],
-      form: {
-        shopCode: '',
-        receiveType: '',
-        orderCode: '',
-        userMobile: '',
-        userAddress: '',
-        orderStartDateTime: '',
-        orderEndDateTime: '',
-        status: '',
-        start: 0,
-        length: 10
-      },
-      shops: [],
-      selectDate: new Date(),
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date())
-            }
-          },
-          {
-            text: '昨天',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
-            }
-          },
-          {
-            text: '一周前',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
-            }
-          }
-        ]
-      }
-    }
-  },
-  computed: {
-    ...mapGetters(['unfinishedOrders'])
-  },
-  watch: {},
-  mounted() {
-    this.getAllShop()
-    this.search()
-    this.$root.$on('showUnfinisnedOrderList', this.showUnfinisnedOrderList)
-  },
-  methods: {
-    ...mapMutations(['setUnfinishedOrders']),
-    search() {
-      if (this.form.status === '全部') {
-        this.form.status = ''
-      }
-      if (this.form.receiveType === '全部') {
-        this.form.receiveType = ''
-      }
-      if (this.selectDate) {
-        const date = Format(new Date(this.selectDate), 'yyyy-MM-dd')
-        this.form.orderStartDateTime = `${date} 00:00:00`
-        this.form.orderEndDateTime = `${date} 23:59:59`
-      } else {
-        this.form.orderStartDateTime = ''
-        this.form.orderEndDateTime = ''
-      }
-      this.form.start = (this.currentPage - 1) * this.pageSize
-      this.form.length = this.pageSize
-      this.getOrderList()
-    },
-    getOrderList() {
-      getOrder(this.form)
-        .then(data => {
-          const { datas = [], count = 0 } = data || {}
-          datas.map(e => {
-            e.content = ''
-            for (let i = 0; i < e.ordersGoods.length; i++) {
-              if (
-                e.ordersGoods[i].specJson !== null &&
-                e.ordersGoods[i].specJson !== ''
-              ) {
-                const specListText = JSON.parse(e.ordersGoods[i].specJson)
-                  .map(e => e.name)
-                  .join(' ')
-                e.content += `${e.ordersGoods[i].goodsName ||
-                  ''} ${specListText} ${e.ordersGoods[i].goodsNum}杯*${
-                  e.ordersGoods[i].goodsRealPrice
-                }元`
+  import { getOrder, getShopsByRole, finishOrder } from '@/api/order'
+  import { mapMutations, mapGetters } from 'vuex'
+  import { Format } from '@/utils/utils'
+
+  export default {
+    data() {
+      return {
+        receiveTypeList: ['全部', '送货上门', '自提'],
+        statusList: [
+          '全部',
+          '用户拒收',
+          '用户取消',
+          '未付款',
+          '已付款',
+          '待发货',
+          '配送中',
+          '确认收货',
+          '已完成'
+        ],
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        orderList: [],
+        dateRange: [],
+        form: {
+          shopCode: '',
+          receiveType: '',
+          orderCode: '',
+          userMobile: '',
+          userAddress: '',
+          orderStartDateTime: '',
+          orderEndDateTime: '',
+          status: '',
+          start: 0,
+          length: 10
+        },
+        shops: [],
+        selectDate: new Date(),
+        pickerOptions: {
+          shortcuts: [
+            {
+              text: '今天',
+              onClick(picker) {
+                picker.$emit('pick', new Date())
+              }
+            },
+            {
+              text: '昨天',
+              onClick(picker) {
+                const date = new Date()
+                date.setTime(date.getTime() - 3600 * 1000 * 24)
+                picker.$emit('pick', date)
+              }
+            },
+            {
+              text: '一周前',
+              onClick(picker) {
+                const date = new Date()
+                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+                picker.$emit('pick', date)
               }
             }
-            if (e.orderDateTime) {
-              const date = new Date(e.orderDateTime)
-              const time = e.orderDateTime.split(' ')[1]
-              e.showTime = `${date.getMonth() +
-                1}月${date.getDate()}日 ${time}`
-            } else {
-              e.showTime = ''
-            }
-            if (e.receiveDateTime) {
-              const date = new Date(e.receiveDateTime)
-              const dateStr = Format(date, 'yyyy-MM-dd HH:mm:ss')
-              e.showReceiveDateTime = `${date.getMonth()}月${date.getDay()}日 ${
-                dateStr.split(' ')[1]
-              }`
-            } else {
-              e.showReceiveDateTime = ''
-            }
-            return e
-          })
-          this.orderList = datas
-          this.total = count
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    handleSizeChange(pageSize) {
-      this.pageSize = pageSize
-      this.currentPage = 1
-      this.search()
-    },
-    handleCurrentChange(page) {
-      this.currentPage = page
-      this.search()
-    },
-    showDetail(data) {},
-    editOrder() {},
-    deleteOrder() {},
-    /**
-     * 弹框确认是否完成
-     */
-    confirmFinishOrder(index, row) {
-      this.$confirm('是否确认完成该订单？', '温馨提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.finishOrder(index, row)
-        })
-        .catch(() => {})
-    },
-    finishOrder(index, row) {
-      finishOrder({ id: row.id }).then(data => {
-        if (data.status === '已完成') {
-          this.orderList[index].status = '已完成'
-          this.setUnfinishedOrders(this.unfinishedOrders - 1)
-          this.$message({
-            message: '手动完成订单成功',
-            type: 'success'
-          })
-        } else {
-          this.$message.error('出现异常，请联系开发人员')
+          ]
         }
-      })
-    },
-    getAllShop() {
-      getShopsByRole().then(data => {
-        this.shops = data || []
-        this.shops.length > 0 && (this.form.shopCode = this.shops[0].code)
-      })
-    },
-    showUnfinisnedOrderList() {
-      this.form = {
-        status: '已付款'
       }
-      this.selectDate = null
+    },
+    computed: {
+      ...mapGetters(['unfinishedOrders'])
+    },
+    watch: {},
+    mounted() {
+      this.getAllShop()
       this.search()
+      this.$root.$on('showUnfinisnedOrderList', this.showUnfinisnedOrderList)
+    },
+    methods: {
+      ...mapMutations(['setUnfinishedOrders']),
+      search() {
+        if (this.form.status === '全部') {
+          this.form.status = ''
+        }
+        if (this.form.receiveType === '全部') {
+          this.form.receiveType = ''
+        }
+        if (this.selectDate) {
+          const date = Format(new Date(this.selectDate), 'yyyy-MM-dd')
+          this.form.orderStartDateTime = `${date} 00:00:00`
+          this.form.orderEndDateTime = `${date} 23:59:59`
+        } else {
+          this.form.orderStartDateTime = ''
+          this.form.orderEndDateTime = ''
+        }
+        this.form.start = (this.currentPage - 1) * this.pageSize
+        this.form.length = this.pageSize
+        this.getOrderList()
+      },
+      getOrderList() {
+        getOrder(this.form)
+          .then(data => {
+            const { datas = [], count = 0 } = data || {}
+            datas.map(e => {
+              e.content = ''
+              for (let i = 0; i < e.ordersGoods.length; i++) {
+                if (
+                  e.ordersGoods[i].specJson !== null &&
+                  e.ordersGoods[i].specJson !== ''
+                ) {
+                  const specListText = JSON.parse(e.ordersGoods[i].specJson)
+                    .map(e => e.name)
+                    .join(' ')
+                  e.content += `${e.ordersGoods[i].goodsName ||
+                  ''} ${specListText} ${e.ordersGoods[i].goodsNum}杯*${
+                    e.ordersGoods[i].goodsRealPrice
+                  }元`
+                }
+              }
+              if (e.orderDateTime) {
+                const date = new Date(e.orderDateTime)
+                const time = e.orderDateTime.split(' ')[1]
+                e.showTime = `${date.getMonth() +
+                1}月${date.getDate()}日 ${time}`
+              } else {
+                e.showTime = ''
+              }
+              if (e.receiveDateTime) {
+                const date = new Date(e.receiveDateTime)
+                const dateStr = Format(date, 'yyyy-MM-dd HH:mm:ss')
+                e.showReceiveDateTime = `${date.getMonth()}月${date.getDay()}日 ${
+                  dateStr.split(' ')[1]
+                }`
+              } else {
+                e.showReceiveDateTime = ''
+              }
+              return e
+            })
+            this.orderList = datas
+            this.total = count
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      },
+      handleSizeChange(pageSize) {
+        this.pageSize = pageSize
+        this.currentPage = 1
+        this.search()
+      },
+      handleCurrentChange(page) {
+        this.currentPage = page
+        this.search()
+      },
+      showDetail(data) {
+      },
+      editOrder() {
+      },
+      deleteOrder() {
+      },
+      /**
+       * 弹框确认是否完成
+       */
+      confirmFinishOrder(index, row) {
+        this.$confirm('是否确认完成该订单？', '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.finishOrder(index, row)
+          })
+          .catch(() => {
+          })
+      },
+      finishOrder(index, row) {
+        finishOrder({ id: row.id }).then(data => {
+          if (data.status === '已完成') {
+            this.orderList[index].status = '已完成'
+            this.setUnfinishedOrders(this.unfinishedOrders - 1)
+            this.$message({
+              message: '手动完成订单成功',
+              type: 'success'
+            })
+          } else {
+            this.$message.error('出现异常，请联系开发人员')
+          }
+        })
+      },
+      getAllShop() {
+        getShopsByRole().then(data => {
+          this.shops = data || []
+          this.shops.length > 0 && (this.form.shopCode = this.shops[0].code)
+        })
+      },
+      showUnfinisnedOrderList() {
+        this.form = {
+          status: '已付款'
+        }
+        this.selectDate = null
+        this.search()
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped src="./OrderList.scss"></style>

@@ -11,12 +11,13 @@ Description
         <el-option v-for="(item,index) in shopList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-       <el-date-picker v-model="daterange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="changeDate" :disabledDate="disabledDate">
-        </el-date-picker>
-        <el-button :type="selectedDate==='today'?'primary':''" @click="selectDate('today')">今日</el-button>
-        <el-button :type="selectedDate==='yestoday'?'primary':''" @click="selectDate('yestoday')">昨日</el-button>
-        <el-button :type="selectedDate==='week'?'primary':''" @click="selectDate('week')">本周</el-button>
-        <el-button :type="selectedDate==='month'?'primary':''" @click="selectDate('month')">本月</el-button>
+      <el-date-picker v-model="daterange" type="daterange" range-separator="至" start-placeholder="开始日期"
+                      end-placeholder="结束日期" @change="changeDate" :disabledDate="disabledDate">
+      </el-date-picker>
+      <el-button :type="selectedDate==='today'?'primary':''" @click="selectDate('today')">今日</el-button>
+      <el-button :type="selectedDate==='yestoday'?'primary':''" @click="selectDate('yestoday')">昨日</el-button>
+      <el-button :type="selectedDate==='week'?'primary':''" @click="selectDate('week')">本周</el-button>
+      <el-button :type="selectedDate==='all'?'primary':''" @click="selectDate('all')">全部</el-button>
     </div>
     <!-- 全部统计 -->
     <div class="data-box">
@@ -57,7 +58,8 @@ Description
           </el-table-column>
           <el-table-column prop="sales" label="销量" sortable="custom" width="180">
             <template slot-scope="scope">
-              <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
+              <div class="bar-bg"
+                   :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
                 {{scope.row.sales}}
               </div>
             </template>
@@ -69,7 +71,8 @@ Description
           </el-table-column>
           <el-table-column prop="amount" label="总额" sortable="custom">
             <template slot-scope="scope">
-              <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
+              <div class="bar-bg"
+                   :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
                 {{scope.row.amount}}
               </div>
             </template>
@@ -101,7 +104,8 @@ Description
         </el-table-column>
         <el-table-column prop="sales" label="销量" sortable="custom">
           <template slot-scope="scope">
-            <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
+            <div class="bar-bg"
+                 :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
               {{scope.row.sales}}
             </div>
           </template>
@@ -113,7 +117,8 @@ Description
         </el-table-column>
         <el-table-column prop="amount" label="总额" sortable="custom">
           <template slot-scope="scope">
-            <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
+            <div class="bar-bg"
+                 :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
               {{scope.row.amount}}
             </div>
           </template>
@@ -137,7 +142,8 @@ Description
         </el-table-column>
         <el-table-column prop="sales" label="销量" sortable="custom">
           <template slot-scope="scope">
-            <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
+            <div class="bar-bg"
+                 :style="{background:`linear-gradient(to right,#fb3 ${scope.row.salesProportion}%,#d3e5f0 0)`}">
               {{scope.row.sales}}
             </div>
           </template>
@@ -149,7 +155,8 @@ Description
         </el-table-column>
         <el-table-column prop="amount" label="总额" sortable="custom">
           <template slot-scope="scope">
-            <div class="bar-bg" :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
+            <div class="bar-bg"
+                 :style="{background:`linear-gradient(to right,#fb3 ${scope.row.amountProportion}%,#d3e5f0 0)`}">
               {{scope.row.amount}}
             </div>
           </template>
@@ -169,6 +176,8 @@ Description
   import { getShopsByRole } from '@/api/order'
   import { echartColors } from '@/config/global'
   import ToolBox from '@/components/toolBox/ToolBox'
+  import { Format, getDateStr, getMondayDate } from '@/utils/utils.js'
+
   export default {
     components: {
       ToolBox
@@ -320,8 +329,8 @@ Description
       getTotal() {
         const params = {
           shopId: this.shopId,
-          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
-          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[1]))
         }
         total(params).then(res => {
           this.summaryData = res
@@ -332,8 +341,8 @@ Description
           shopId: this.shopId,
           sort: this.goodsCatSearchParams.sort,
           desc: this.goodsCatSearchParams.desc,
-          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
-          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[1]))
         }
         console.log(params)
         goodsCatSales(params).then(res => {
@@ -368,8 +377,8 @@ Description
           shopId: this.shopId,
           sort: this.goodsSearchParams.sort,
           desc: this.goodsSearchParams.desc,
-          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
-          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[1]))
         }
         goodsSales(params).then(res => {
           this.goodsSales = res || []
@@ -381,8 +390,8 @@ Description
           sort: this.specialGoodsSearchParams.sort,
           desc: this.specialGoodsSearchParams.desc,
           isYiYuanSales: true,
-          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
-          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[1]))
         }
         goodsSales(params).then(res => {
           this.specialGoodsSales = res || []
@@ -460,8 +469,8 @@ Description
       getTotalData() {
         const params = {
           id: this.shopId,
-          orderStartDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[0])),
-          orderEndDateTime: this.daterange.length === 0 ? '' : this.getNowFormatDate(new Date(this.daterange[1]))
+          orderStartDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[0])),
+          orderEndDateTime: this.daterange.length === 0 ? '' : this.getFormatDate(new Date(this.daterange[1]))
         }
         totalByDate(params).then(res => {
           this.totalData = res
@@ -508,7 +517,7 @@ Description
         this.chartsObj.lineChart.setOption(this.lineOption)
       },
       // 获取当前时间，格式YYYY-MM-DD
-      getNowFormatDate(date) {
+      getFormatDate(date) {
         const seperator1 = '-'
         const year = date.getFullYear()
         let month = date.getMonth() + 1
@@ -527,18 +536,33 @@ Description
         this.getGoodsCatSales()
         this.getGoodsSales()
         this.getSpecialGoodsSales()
-  
+
         this.getTotalData()
         this.changeTab(this.activeTab)
       },
       selectDate(role) {
         this.selectedDate = role
+        let startDate
+        let endDate
         switch (role) {
-          case 'today':break
-          case 'yestoday':break
-          case 'week':break
-          case 'month':break
+          case 'today':
+            endDate = startDate = Format(new Date(), 'yyyy-MM-dd')
+            this.daterange = [startDate, endDate]
+            break
+          case 'yestoday':
+            endDate = startDate = getDateStr(-1)
+            this.daterange = [startDate, endDate]
+            break
+          case 'week':
+            endDate = Format(new Date(), 'yyyy-MM-dd')
+            startDate = getMondayDate()
+            this.daterange = [startDate, endDate]
+            break
+          case 'all':
+            this.daterange = []
+            break
         }
+        this.changeDate()
       }
     }
   }

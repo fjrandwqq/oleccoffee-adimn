@@ -19,14 +19,31 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 import * as customFilter from './utils/filter'
+
+import 'viewerjs/dist/viewer.min.css'
+import 'viewerjs/dist/viewer.min'
+import iViewer from 'v-viewer'
+
+Vue.use(iViewer, {
+  defaultOptions: {
+    zIndex: 20181120,
+    title: false
+  }
+})
+
 const echarts = require('echarts')
 
+// 过滤器
 Object.keys(customFilter).forEach(key => {
   Vue.filter(key, customFilter[key])
 })
 
 Vue.use(ElementUI)
 Vue.prototype.$echarts = echarts
+
+import VueCropper from 'vue-cropper'
+
+Vue.use(VueCropper)
 
 Vue.config.productionTip = false
 

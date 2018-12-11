@@ -109,9 +109,9 @@ export const asyncRouterMap = [
     meta: { title: '商品管理', icon: 'tree', code: 'goodsManage' },
     children: [
       {
-        path: 'tree',
+        path: 'goods',
         name: 'goodsManage',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/olec/goods/Goods'),
         meta: { title: '商品列表', code: 'goodsList' }
       }
     ]

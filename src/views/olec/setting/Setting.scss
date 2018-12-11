@@ -25,3 +25,19 @@
 .tip{
     color:red;
 }
+.table-wrapper{
+ /deep/ .img-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img{
+        max-height:80px;
+        max-width:80px;
+        cursor: pointer;
+    }
+}
+}
+.vue-cropper-wrapper{
+    width:600px;
+    height:600px;
+}

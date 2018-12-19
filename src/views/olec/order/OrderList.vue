@@ -69,7 +69,7 @@ Description
         </el-table-column>
         <el-table-column align="center" prop="status" label="支付状态" width="100">
         </el-table-column>
-        <el-table-column align="center" label="店员操作状态" width="140" fixed='right'>
+        <el-table-column align="center" label="店员操作状态" width="200" fixed='right'>
           <template slot-scope="scope">
             <!-- <span class="single-btn" @click="showDetail(scope.row)">查看</span>
                         <span class="single-btn" @click="editOrder(scope.$index, scope.row)">修改</span>
@@ -89,6 +89,9 @@ Description
             <el-button size="mini" v-show="scope.row.status !== '已完成'" type="danger"
                        @click="confirmFinishOrder(scope.$index, scope.row)">完成
             </el-button>
+            <el-button size="mini" v-show="scope.row.status !== '已完成'" type="primary"
+                       @click="chargeBack(scope.$index, scope.row)">退单
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -96,6 +99,30 @@ Description
     <el-pagination v-show="total>0" @size-change="handleSizeChange" @current-change="handleCurrentChange"
                    :current-page="currentPage" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
+    <el-dialog
+      :visible.sync="dialogVisible"
+      width="500px"
+    >
+    <el-form label-width="80px" ref="form">
+      <el-form-item label="订单号">
+        <el-input v-model="form.name"></el-input>
+      </el-form-item>
+      <el-form-item label="退款原因">
+        <el-input
+         type="textarea"
+        :rows="5"
+          placeholder="请输入内容"></el-input>
+      </el-form-item>
+    </el-form>
+     <span
+        slot="footer"
+        class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="sumbit">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -163,7 +190,8 @@ Description
               }
             }
           ]
-        }
+        },
+        dialogVisible: false
       }
     },
     computed: {
@@ -298,6 +326,14 @@ Description
         }
         this.selectDate = null
         this.search()
+      },
+      // 点击退单
+      chargeBack(index, row) {
+        this.dialogVisible = true
+      },
+      // 提交退单到后台
+      sumbit() {
+
       }
     }
   }

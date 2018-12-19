@@ -20,13 +20,13 @@ Description 配置页面
           clearable
           @change="changeShop"
         >
-          <el-option
+          <el-Option
             v-for="item in shops"
             :key="item.name"
             :label="item.name"
             :value="item.code"
           >
-          </el-option>
+          </el-Option>
         </el-select>
         <!-- <el-switch v-if="shops.length>0&&shops[shopIndex]" v-model="deliveryRange" active-text="开启外送" inactive-text="关闭外送" @change="changeSwitch">
 				</el-switch> -->
@@ -134,7 +134,7 @@ Description 配置页面
             <el-button
               size="mini"
               type="primary"
-              @click="uploadImg(scope.$index, scope.row)"
+              @click="changeImg(scope.$index, scope.row)"
             >修改图片</el-button>
           </template>
         </el-table-column>
@@ -150,26 +150,59 @@ Description 配置页面
     >
     </el-pagination>
     <el-dialog
-      title="提示"
       :visible.sync="dialogVisible"
-      width="50%"
+      width="900px"
+      custom-class="upload-dialog"
     >
-      <div class="vue-cropper-wrapper">
-      <vueCropper
-        ref="cropper"
-        :img="option.img"
-        :outputSize="option.outputSize"
-        :outputType="option.outputType"
-        :info="option.info"
-        :canScale="option.canScale"
-        :autoCrop="option.autoCrop"
-        :autoCropWidth="option.autoCropWidth"
-        :autoCropHeight="option.autoCropHeight"
-        :fixed="option.fixed"
-        :fixedNumber="option.fixedNumber"
-      >
-      </vueCropper>
+      <div slot="title">
+        请选择图片
+        <div class="upload-btn">
+          <label for="uploads">选择图片</label>
+          <input
+            type="file"
+            id="uploads"
+            accept="image/png, image/jpeg, image/gif, image/jpg"
+            @change="uploadImg($event)"
+          />
+        </div>
       </div>
+      <div class="vue-cropper-wrapper">
+        <vueCropper v-if="dialogVisible"
+          ref="cropper"
+          :img="croperOption.img"
+          :outputSize="croperOption.outputSize"
+          :outputType="croperOption.outputType"
+          :info="croperOption.info"
+          :canScale="croperOption.canScale"
+          :autoCrop="croperOption.autoCrop"
+          :autoCropWidth="croperOption.autoCropWidth"
+          :autoCropHeight="croperOption.autoCropHeight"
+          :fixed="croperOption.fixed"
+          :fixedNumber="croperOption.fixedNumber"
+           @realTime="realTime"
+        >
+        </vueCropper>
+      </div>
+      <div class="preview-wrapper">
+          <div class="preview preview-lg">
+            <img
+              :src="cropImage"
+              alt=""
+            >
+          </div>
+          <div class="preview preview-md">
+            <img
+              :src="cropImage"
+              alt=""
+            >
+          </div>
+          <div class="preview preview-sm">
+            <img
+              :src="cropImage"
+              alt=""
+            >
+          </div>
+        </div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -177,8 +210,8 @@ Description 配置页面
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogVisible = false"
-        >确 定</el-button>
+          @click="saveImg"
+        >上传</el-button>
       </span>
     </el-dialog>
 
@@ -187,7 +220,7 @@ Description 配置页面
 <script>
   import { getShopsByRole } from '@/api/order'
 
-  import { getGoods, updateShop, updateGoods } from '@/api/setting'
+  import { getGoods, updateShop, updateGoods, upload } from '@/api/setting'
   export default {
     data() {
       return {
@@ -205,17 +238,21 @@ Description 配置页面
         deliveryRange: 0,
 
         // 图片裁剪
-        option: {
+        croperOption: {
           img: '', // 裁剪图片的地址
           info: true, // 裁剪框的大小信息
           outputSize: 1, // 裁剪生成图片的质量
           outputType: 'jpeg', // 裁剪生成图片的格式
           canScale: false, // 图片是否允许滚轮缩放
           autoCrop: true, // 是否默认生成截图框
-          autoCropWidth: 150, // 默认生成截图框宽度
-          autoCropHeight: 150, // 默认生成截图框高度
+          autoCropWidth: 400, // 默认生成截图框宽度
+          autoCropHeight: 400, // 默认生成截图框高度
           fixed: false, // 是否开启截图框宽高固定比例
           fixedNumber: [4, 4] // 截图框的宽高比例
+        },
+        cropImage: '',
+        uploadOption: {
+          imageFile: ''
         },
         dialogVisible: false
       }
@@ -336,9 +373,44 @@ Description 配置页面
             this.$message.error('网站出错，请联系开发人员')
           })
       },
-      uploadImg(index, row) {
-        this.option.img = 'http://gss0.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/7aec54e736d12f2edb0abb094fc2d5628535684f.jpg'
+      changeImg(index, row) {
+        this.croperOption.img = ''
+        this.cropImage = ''
+        this.targetGoodsId = row.id
         this.dialogVisible = true
+      },
+      uploadImg(e) {
+        const file = e.target.files[0]
+        const reader = new FileReader()
+        let data
+        if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
+          this.$Message.error('图片类型必须是.gif,jpeg,jpg,png,bmp中的一种')
+          return
+        }
+        reader.onload = e => {
+          if (typeof e.target.result === 'object') {
+            // array buffer 转化为blob，base 64 则不用
+            data = window.URL.createObjectURL(new Blob([e.target.result]))
+          } else {
+            data = e.target.result
+          }
+          this.croperOption.img = data
+        }
+        reader.readAsArrayBuffer(file)
+      },
+      // 实时预览
+      realTime() {
+        this.$refs.cropper.getCropBlob(data => {
+          this.cropImage = window.URL.createObjectURL(data)
+        })
+      },
+      saveImg() {
+        this.$refs.cropper.getCropBlob(data => {
+          this.cropImage = window.URL.createObjectURL(data)
+          upload(this.targetGoodsId, data).then(res => {
+            this.search()
+          })
+        })
       }
     }
   }

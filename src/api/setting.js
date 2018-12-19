@@ -18,9 +18,18 @@ const updateGoods = (goodsId, params) =>
     method: 'put',
     data: params
   })
-
+const upload = (goodsId, image) =>
+  request({
+    url: `/api/goods/picture/upload`,
+    method: 'post',
+    data: {
+      goodsId,
+      image
+    }
+  })
 export {
   getGoods,
   updateShop,
-  updateGoods
+  updateGoods,
+  upload
 }

@@ -90,7 +90,7 @@ Description
                        @click="confirmFinishOrder(scope.$index, scope.row)">完成
             </el-button>
             <el-button size="mini" v-show="scope.row.status !== '已完成'" type="primary"
-                       @click="chargeBack(scope.$index, scope.row)">退单
+                       @click="chargeBack(scope.$index, scope.row)">退款
             </el-button>
           </template>
         </el-table-column>

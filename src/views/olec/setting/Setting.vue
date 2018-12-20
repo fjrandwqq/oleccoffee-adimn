@@ -387,6 +387,7 @@ Description 配置页面
           this.$Message.error('图片类型必须是.gif,jpeg,jpg,png,bmp中的一种')
           return
         }
+        this.fileName = file.name
         reader.onload = e => {
           if (typeof e.target.result === 'object') {
             // array buffer 转化为blob，base 64 则不用
@@ -407,11 +408,14 @@ Description 配置页面
       saveImg() {
         this.$refs.cropper.getCropBlob(data => {
           this.cropImage = window.URL.createObjectURL(data)
-          const params = {
-            goodsId: this.targetGoodsId,
-            image: data
-          }
-          upload(params).then(res => {
+          const param = new FormData()
+          param.append('image', data, this.fileName)
+          param.append('goodsId', this.targetGoodsId)
+          // const params = {
+          //   goodsId: this.targetGoodsId,
+          //   image: data
+          // }
+          upload(param).then(res => {
             this.search()
             this.targetGoodsId = ''
           })

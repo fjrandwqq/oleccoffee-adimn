@@ -23,7 +23,10 @@ const upload = params =>
   request({
     url: `/api/goods/picture/upload`,
     method: 'post',
-    params
+    params,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 
 export {

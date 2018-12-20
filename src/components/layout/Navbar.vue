@@ -51,9 +51,9 @@
     mounted() {
       this.getUnfinishedOrders()
       // 临时方案，10秒钟获取一次未完成订单
-      setInterval(() => {
-        this.getUnfinishedOrders()
-      }, 15 * 1000)
+      // setInterval(() => {
+      //   this.getUnfinishedOrders()
+      // }, 15 * 1000)
     },
     data() {
       return {

@@ -16,10 +16,17 @@ const finishOrder = params => request({
   params
 })
 
+const refund = params =>
+  request({
+    url: '/api/orders/refund',
+    method: 'post',
+    params
+  })
+
 export {
   getOrder,
   getShopsByRole,
-  finishOrder
-
+  finishOrder,
+  refund
 }
 

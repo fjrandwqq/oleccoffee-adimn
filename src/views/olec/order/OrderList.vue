@@ -103,9 +103,9 @@ Description
       :visible.sync="dialogVisible"
       width="500px"
     >
-    <el-form label-width="80px" ref="form">
-      <el-form-item label="订单号">
-        <el-input v-model="form.name"></el-input>
+    <el-form label-width="80px" ref="refundForm" :model="refundForm.data" :rules="refundForm.rules">
+      <el-form-item label="订单号" prop="ordersCode" style="margin-bottom:22px;">
+        <el-input v-model="form.name" style="width:200px;"></el-input>
       </el-form-item>
       <el-form-item label="退款原因">
         <el-input
@@ -117,7 +117,7 @@ Description
      <span
         slot="footer"
         class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="resetForm('refundForm')">取 消</el-button>
         <el-button
           type="primary"
           @click="sumbit">确定</el-button>
@@ -127,7 +127,7 @@ Description
 </template>
 
 <script>
-  import { getOrder, getShopsByRole, finishOrder } from '@/api/order'
+  import { getOrder, getShopsByRole, finishOrder, refund } from '@/api/order'
   import { mapMutations, mapGetters } from 'vuex'
   import { Format } from '@/utils/utils'
 
@@ -191,7 +191,18 @@ Description
             }
           ]
         },
-        dialogVisible: false
+        dialogVisible: false,
+        refundForm: {
+          data: {
+            ordersCode: '',
+            refundDesc: ''
+          },
+          rules: {
+            ordersCode: [
+              { required: true, message: '请输入订单编号', trigger: 'blur change' }
+            ]
+          }
+        }
       }
     },
     computed: {
@@ -327,13 +338,26 @@ Description
         this.selectDate = null
         this.search()
       },
-      // 点击退单
+      // 点击退款
       chargeBack(index, row) {
         this.dialogVisible = true
       },
       // 提交退单到后台
       sumbit() {
-
+        this.$refs['refundForm'].validate((valid) => {
+          if (valid) {
+            refund(this.refundForm.data).then(res => {
+              console.log(res)
+            })
+          } else {
+            this.$message.error('表单填写不完整')
+            return false
+          }
+        })
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields()
+        this.dialogVisible = false
       }
     }
   }

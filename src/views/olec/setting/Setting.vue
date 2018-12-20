@@ -407,8 +407,13 @@ Description 配置页面
       saveImg() {
         this.$refs.cropper.getCropBlob(data => {
           this.cropImage = window.URL.createObjectURL(data)
-          upload(this.targetGoodsId, data).then(res => {
+          const params = {
+            goodsId: this.targetGoodsId,
+            image: data
+          }
+          upload(params).then(res => {
             this.search()
+            this.targetGoodsId = ''
           })
         })
       }

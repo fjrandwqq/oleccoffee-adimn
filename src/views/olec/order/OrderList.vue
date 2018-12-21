@@ -102,6 +102,7 @@ Description
     <el-dialog
       :visible.sync="dialogVisible"
       width="500px"
+      title="退款"
     >
     <el-form label-width="80px" ref="refundForm" :model="refundForm.data" :rules="refundForm.rules">
       <el-form-item label="订单号" prop="ordersCode" style="margin-bottom:22px;">
@@ -352,16 +353,20 @@ Description
                   message: res.errorDesc,
                   type: 'error'
                 })
+              } else {
+                this.$alert(res.ordersStatus, '结果', {
+                  confirmButtonText: '确定'
+                })
+                this.resetForm()
               }
             })
           } else {
             this.$message.error('表单填写不完整')
-            return false
           }
         })
       },
-      resetForm(formName) {
-        this.$refs[formName].resetFields()
+      resetForm() {
+        this.$refs['refundForm'].resetFields()
         this.dialogVisible = false
       }
     }

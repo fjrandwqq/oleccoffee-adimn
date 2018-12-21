@@ -409,7 +409,10 @@ Description 配置页面
         this.$refs.cropper.getCropBlob(data => {
           this.cropImage = window.URL.createObjectURL(data)
           const param = new FormData()
+          console.log(this.cropImage)
+          console.log(data)
           param.append('image', data, this.fileName)
+          console.log(param.get('image'))
           param.append('goodsId', this.targetGoodsId)
           // const params = {
           //   goodsId: this.targetGoodsId,
@@ -418,6 +421,7 @@ Description 配置页面
           upload(param).then(res => {
             this.search()
             this.targetGoodsId = ''
+            this.dialogVisible = false
           })
         })
       }

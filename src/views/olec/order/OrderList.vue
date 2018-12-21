@@ -105,13 +105,13 @@ Description
     >
     <el-form label-width="80px" ref="refundForm" :model="refundForm.data" :rules="refundForm.rules">
       <el-form-item label="订单号" prop="ordersCode" style="margin-bottom:22px;">
-        <el-input v-model="form.name" style="width:200px;"></el-input>
+        <el-input v-model="refundForm.data.ordersCode" style="width:200px;"></el-input>
       </el-form-item>
       <el-form-item label="退款原因">
         <el-input
          type="textarea"
         :rows="5"
-          placeholder="请输入内容"></el-input>
+          placeholder="请输入内容" v-model="refundForm.data.refundDesc"></el-input>
       </el-form-item>
     </el-form>
      <span
@@ -347,7 +347,12 @@ Description
         this.$refs['refundForm'].validate((valid) => {
           if (valid) {
             refund(this.refundForm.data).then(res => {
-              console.log(res)
+              if (res.status === 'FAIL') {
+                this.$message({
+                  message: res.errorDesc,
+                  type: 'error'
+                })
+              }
             })
           } else {
             this.$message.error('表单填写不完整')

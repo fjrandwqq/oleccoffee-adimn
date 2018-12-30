@@ -88,11 +88,9 @@ Description 配置页面
         >
           <template slot-scope="scope">
             <div
-              class="img-wrapper"
-              v-viewer
-            >
+              class="img-wrapper" v-viewer="{movable: true}">
               <img
-                src="http://gss0.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/7aec54e736d12f2edb0abb094fc2d5628535684f.jpg"
+                :src="imgPath+scope.row.imgs[0]"
                 alt=""
               />
             </div>
@@ -219,11 +217,12 @@ Description 配置页面
 </template>
 <script>
   import { getShopsByRole } from '@/api/order'
-
   import { getGoods, updateShop, updateGoods, upload } from '@/api/setting'
+  import { IMG_PATH } from '@/config/global'
   export default {
     data() {
       return {
+        imgPath: IMG_PATH,
         searchParams: {
           shopCode: '',
           goodsName: ''
@@ -374,7 +373,8 @@ Description 配置页面
           })
       },
       changeImg(index, row) {
-        this.croperOption.img = ''
+        this.croperOption.img = this.imgPath + row.imgs[0]
+        console.log(this.croperOption.img)
         this.cropImage = ''
         this.targetGoodsId = row.id
         this.dialogVisible = true
@@ -409,15 +409,8 @@ Description 配置页面
         this.$refs.cropper.getCropBlob(data => {
           this.cropImage = window.URL.createObjectURL(data)
           const param = new FormData()
-          console.log(this.cropImage)
-          console.log(data)
           param.append('image', data, this.fileName)
-          console.log(param.get('image'))
           param.append('goodsId', this.targetGoodsId)
-          // const params = {
-          //   goodsId: this.targetGoodsId,
-          //   image: data
-          // }
           upload(param).then(res => {
             this.search()
             this.targetGoodsId = ''

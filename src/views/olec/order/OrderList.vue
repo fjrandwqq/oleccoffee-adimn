@@ -67,7 +67,7 @@ Description
         </el-table-column>
         <el-table-column align="center" prop="userAddress" label="收货地址">
         </el-table-column>
-        <el-table-column align="center" prop="status" label="支付状态" width="100">
+        <el-table-column align="center" prop="status" label="订单状态" width="100">
         </el-table-column>
         <el-table-column align="center" label="店员操作状态" width="200" fixed='right'>
           <template slot-scope="scope">

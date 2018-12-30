@@ -21,7 +21,6 @@ import '@/permission' // permission control
 import * as customFilter from './utils/filter'
 
 import 'viewerjs/dist/viewer.min.css'
-import 'viewerjs/dist/viewer.min'
 import iViewer from 'v-viewer'
 
 Vue.use(iViewer, {
